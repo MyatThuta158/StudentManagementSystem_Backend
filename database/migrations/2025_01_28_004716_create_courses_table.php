@@ -15,10 +15,10 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->string('description');
-            $table->string('credits');
+            $table->decimal('credits');
             $table->timestamp('start_date');
             $table->timestamp('end_date');
-            $table->string('min_mark');
+            $table->decimal('min_mark');
             $table->timestamps();
         });
     }
