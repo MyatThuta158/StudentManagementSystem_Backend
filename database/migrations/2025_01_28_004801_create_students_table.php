@@ -16,10 +16,10 @@ return new class extends Migration
             $table->string('name');
             $table->string('email')->unique();
             $table->string('password');
-            $table->string('phone_number');
-            $table->timestamp('date_of_birth');
-            $table->dateTime('Enrollment_date');
-            $table->string('address');
+            $table->string('phone_number')->nullable();
+            $table->timestamp('date_of_birth')->nullable();
+            $table->dateTime('enrollment_date')->nullable();
+            $table->string('address')->nullable();
             $table->timestamps();
         });
     }
