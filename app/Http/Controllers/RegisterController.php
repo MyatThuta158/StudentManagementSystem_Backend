@@ -5,8 +5,6 @@ namespace App\Http\Controllers;
 use App\Http\Requests\RegisterRequest;
 use App\Models\Student;
 use App\ResponseModel\ResponseModel;
-use GrahamCampbell\ResultType\Success;
-use Illuminate\Http\Request;
 use Log;
 
 class RegisterController extends Controller
@@ -26,7 +24,7 @@ class RegisterController extends Controller
             return response()->json(ResponseModel::Ok("Registered Successfully", $data->id,"Registered Successfully"));
         }catch(\Exception $e){
             Log::error("RegisterController.register => " + $e->getMessage());
-            return response()->json(ResponseModel::Failed("Internal Error","",$e->getMessage()));
+            return response()->json(ResponseModel::Failed("Internal Error","", $e->getMessage()));
         }
     }
 }
