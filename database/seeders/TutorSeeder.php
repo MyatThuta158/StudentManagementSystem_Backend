@@ -2,67 +2,66 @@
 
 namespace Database\Seeders;
 
+use App\Models\Tutor;
 use Carbon\Carbon;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
-use App\Models\Teacher;
 
-class Teachers extends Seeder
+class TutorSeeder extends Seeder
 {
     /**
      * Run the database seeds.
      */
     public function run(): void
     {
-        Teacher::truncate();
-        Teacher::create([
+        Tutor::truncate();
+        Tutor::create([
             "name"=>"Doris Navarro",
-            "email"=> "doris@gmail.com",
+            "email"=> "doristt@gmail.com",
             "password"=> bcrypt("password"),
             "phone_number"=>"09790000000",
             "specialization"=>"Mathematics",
-            "created_at"    => Carbon::now(),
-            "updated_at"=> Carbon::now(),
+            "created_at"    => Carbon::now('UTC'),
+            "updated_at"=> Carbon::now('UTC'),
         ]);
 
-        Teacher::create([
+        Tutor::create([
             "name"=>"Joanne Duke",
-            "email"=> "joanne@gmail.com",
+            "email"=> "joannett@gmail.com",
             "password"=> bcrypt("password"),
             "phone_number"=>"09790000004",
             "specialization"=>"English",
-            "created_at"    => Carbon::now(),
-            "updated_at"=> Carbon::now(),
+            "created_at"    => Carbon::now('UTC'),
+            "updated_at"=> Carbon::now('UTC'),
         ]);
 
-        Teacher::create([
+        Tutor::create([
             "name"=>"Alden Beck",
-            "email"=> "doris@gmail.com",
+            "email"=> "doristt@gmail.com",
             "password"=> bcrypt("password"),
             "phone_number"=>"09790000003",
             "specialization"=>"English",
-            "created_at"    => Carbon::now(),
-            "updated_at"=> Carbon::now(),
+            "created_at"    => Carbon::now('UTC'),
+            "updated_at"=> Carbon::now('UTC'),
         ]);
 
-        Teacher::create([
+        Tutor::create([
             "name"=>"Juanita Baird",
-            "email"=> "juanita@gmail.com",
+            "email"=> "juanitatt@gmail.com",
             "password"=> bcrypt("password"),
             "phone_number"=>"09790000001",
             "specialization"=>"English",
-            "created_at"    => Carbon::now(),
-            "updated_at"=> Carbon::now(),
+            "created_at"    => Carbon::now('UTC'),
+            "updated_at"=> Carbon::now('UTC'),
         ]);
 
-        Teacher::create([
+        Tutor::create([
             "name"=>"Wallace Cowan",
-            "email"=> "wallace@gmail.com",
+            "email"=> "wallacett@gmail.com",
             "password"=> bcrypt("password"),
             "phone_number"=>"09790000002",
             "specialization"=>"English",
-            "created_at"    => Carbon::now(),
-            "updated_at"=> Carbon::now(),
+            "created_at"    => Carbon::now('UTC'),
+            "updated_at"=> Carbon::now('UTC'),
         ]);
     }
 }
