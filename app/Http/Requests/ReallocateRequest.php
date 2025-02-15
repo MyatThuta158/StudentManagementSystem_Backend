@@ -24,7 +24,9 @@ class ReallocateRequest extends FormRequest
         return [
             "tutor_id" => "integer|required",
             "student_id" => "integer|required",
-            "allocation_date"=> "date|required"
+            "allocation_date"=> "date|required",
+            "staff_id"=>"required|integer",
+            "allocated_by"=> "required|string"
         ];
     }
 }

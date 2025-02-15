@@ -31,10 +31,10 @@ class ReAllocateController
             "name"=> Str::uuid7(),
             "student_id" => $requested_vars['student_id'],
             "tutor_id" => $requested_vars['tutor_id'],
-            "staff_id"=>1, // this should get from webapplication.
+            "staff_id"=>$requested_vars['staff_id'], // this should get from webapplication.
             "section_id" => $old_allocate->section_id,
             "allocation_date"=> $requested_vars['allocation_date'],
-            "allocated_by"=>"Hello World " // this should get from staff table
+            "allocated_by"=>$requested_vars['allocated_by'] // this should get from staff table
         ];
         DB::beginTransaction();
         try {
