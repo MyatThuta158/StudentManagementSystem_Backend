@@ -12,9 +12,7 @@ Route::get('/user', function (Request $request) {
 Route::post('/user/login', [App\Http\Controllers\AuthController::class,'login']);
 Route::post('/user/register',[App\Http\Controllers\RegisterController::class,'register']);
 
-
-Route::get('/admin/allocate/list',[ReAllocateController::class,'list_allocate']);
-Route::post('/admin/allocate/{allocateId}',[ReAllocateController::class,'reallocate']);
+Route::put('/allocations/{allocateId}',[ReAllocateController::class,'reallocate']);
 // allocation start
 Route::get('allocations', [AllocationController::class, 'index']); // Retrieve all allocations
 Route::get('allocations/{id}', [AllocationController::class, 'show']); // Retrieve a single allocation

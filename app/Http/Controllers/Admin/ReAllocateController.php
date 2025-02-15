@@ -43,20 +43,10 @@ class ReAllocateController
             DB::commit();
         } catch (\Exception $e) {
             DB::rollBack();
-        Log::debug($e->getMessage());
+            Log::debug($e->getMessage());
             return response()->json(ResponseModel::Failed(null, $allocateId, "Some Error Happen Please Contact Developer"));
         }
         Log::debug("Reallocate successfully");
         return response()->json(ResponseModel::Ok($data,$data->id , "Reallocate Successfully"));
-    }
-
-    public function list_allocate(){
-        $allocations = Allocation::join('staffs','staffs.id',"=","staff_id")
-        ->join("tutors",'tutor_id',"=","tutors.id")
-        ->join("students",'student_id',"=","students.id")
-        ->join("sections",'section_id',"=",'sections.id')
-        ->get();
-
-        return response()->json(ResponseModel::Ok($allocations,"","Fetch Successfully !"));
     }
 }
