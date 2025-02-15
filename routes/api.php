@@ -2,6 +2,7 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\AllocationController;
 
 Route::get('/user', function (Request $request) {
     return $request->user();
@@ -9,3 +10,9 @@ Route::get('/user', function (Request $request) {
 
 Route::post('/user/login', [App\Http\Controllers\AuthController::class,'login']);
 Route::post('/user/register',[App\Http\Controllers\RegisterController::class,'register']);
+
+// allocation start
+Route::get('allocations', [AllocationController::class, 'index']); // Retrieve all allocations
+Route::get('allocations/{id}', [AllocationController::class, 'show']); // Retrieve a single allocation
+Route::post('allocations', [AllocationController::class, 'store']); // Store allocation
+//allocation end
