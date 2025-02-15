@@ -35,7 +35,7 @@ class StudentSeeder extends Seeder
 
         Student::create([
             "name"=>"Alden Beck",
-            "email"=> "dorisst@gmail.com",
+            "email"=> "dorissta@gmail.com",
             "password"=> bcrypt("password"),
             "phone_number"=>"09790000003",
             "created_at"    => Carbon::now('UTC'),

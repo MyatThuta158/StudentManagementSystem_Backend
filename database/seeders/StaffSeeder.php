@@ -34,7 +34,7 @@ class StaffSeeder extends Seeder
 
         Staff::create([
             "name"=>"Alden Beck",
-            "email"=> "doris@gmail.com",
+            "email"=> "doris1@gmail.com",
             "password"=> bcrypt("password"),
             "phone_number"=>"09790000003",
             "created_at"    => Carbon::now('UTC'),

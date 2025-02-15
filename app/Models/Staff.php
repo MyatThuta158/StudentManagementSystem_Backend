@@ -15,4 +15,5 @@ class Staff extends Model
     {
         return $this->hasMany(Allocation::class);
     }
+    protected $table = "staffs";
 }
