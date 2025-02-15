@@ -16,9 +16,9 @@ class DatabaseSeeder extends Seeder
         try{
             \DB::beginTransaction();
             
-            $this->call(Teachers::class);
-            $this->call(Classes::class);
-            $this->call(Courses::class);
+            $this->call(TutorSeeder::class);
+            $this->call(StudentSeeder::class);
+            $this->call(StaffSeeder::class);
             
             \DB::commit();
         }catch(\Exception $e){
