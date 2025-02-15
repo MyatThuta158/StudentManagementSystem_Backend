@@ -2,13 +2,17 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Tutor extends Model
 {
-    protected $guarded = [];
+    use HasFactory;
 
-    protected $hidden = [
-        'password',
-    ];
+    protected $fillable = ['name', 'email', 'password', 'phone_number', 'specialization'];
+
+    public function allocations()
+    {
+        return $this->hasMany(Allocation::class);
+    }
 }
