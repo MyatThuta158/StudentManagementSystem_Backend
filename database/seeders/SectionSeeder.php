@@ -13,6 +13,7 @@ class SectionSeeder extends Seeder
      */
     public function run(): void
     {
+        Section::truncate();
         Section::create([
             "id"=>1,
             "name"=>"Hello World",

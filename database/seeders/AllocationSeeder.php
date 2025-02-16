@@ -14,6 +14,7 @@ class AllocationSeeder extends Seeder
      */
     public function run(): void
     {
+        Allocation::truncate();
         Allocation::create([
             "student_id"=>1,
             "tutor_id"=>1,

@@ -16,6 +16,7 @@ class DatabaseSeeder extends Seeder
         try{
             \DB::beginTransaction();
             
+            $this->call(RoleAndPermissionSeeder::class);
             $this->call(TutorSeeder::class);
             $this->call(StudentSeeder::class);
             $this->call(StaffSeeder::class);
