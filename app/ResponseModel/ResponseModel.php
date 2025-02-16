@@ -27,6 +27,6 @@
         }
 
         public static function Failed($data,string $id,string $message){
-            return new ResponseModel(ResponseStatus::success,$data,$id,$message);
+            return new ResponseModel(ResponseStatus::failed,$data,$id,$message);
         }
     }

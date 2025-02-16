@@ -15,4 +15,8 @@ class Section extends Model
     {
         return $this->hasMany(Allocation::class);
     }
+
+    public function blogs(){
+        return $this->hasMany(Blog::class);
+    }
 }
