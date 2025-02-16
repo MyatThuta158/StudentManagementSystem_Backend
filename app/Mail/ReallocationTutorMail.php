@@ -2,21 +2,22 @@
 
 namespace App\Mail;
 
+use App\Models\Student;
+use App\Models\Tutor;
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
 use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
 
-class ReallocationMail extends Mailable
+class ReallocationTutorMail extends Mailable
 {
     use Queueable, SerializesModels;
 
     /**
      * Create a new message instance.
      */
-    public function __construct(private Student $student)
+    public function __construct(private Student $student , private Tutor $tutor)
     {
         //
     }
@@ -27,11 +28,8 @@ class ReallocationMail extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            $this->student->email,
             env("MAIL_FROM_ADDRESS",""),
-            [],
-            [],
-            subject: 'Reallocation Mail',
+            subject: 'Reallocation Notification',
         );
     }
 
@@ -41,7 +39,10 @@ class ReallocationMail extends Mailable
     public function content(): Content
     {
         return new Content(
-            view: 'view.name',
+            view: 'email.reallocation_tutor',
+            with: [
+                "student_name"=> $this->student->name,
+            ]
         );
     }
 

@@ -2,11 +2,16 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Requests\ReallocateRequest;
+use App\Mail\ReallocationTutorMail;
+use App\Mail\ReallocationMailStudent;
 use App\Models\Allocation;
+use App\Models\Student;
+use App\Models\Tutor;
 use App\ResponseModel\ResponseModel;
 use DB;
 use Illuminate\Database\Eloquent\Model;
 use Log;
+use Mail;
 use Str;
 
 class ReAllocateController
@@ -21,14 +26,17 @@ class ReAllocateController
     {
         $requested_vars = $request->validated();
 
-        $student = Student::where($requested_vars['student_id'])->get();
+        $student = Student::where($requested_vars['student_id'])->first();
+        $tutor = Tutor::where($requested_vars['tutor_id'])->first();
 
         $old_allocate = Allocation::where('id', $allocateId)->first();
 
         if ($old_allocate == null) {
             return response()->json(ResponseModel::Failed(null, $allocateId, "Old Allocate Id Not Found"));
         }
-
+        if($old_allocate->student_id == $requested_vars['student_id'] && $old_allocate->tutor_id == $requested_vars['tutor_id']){
+            return response()->json(ResponseModel::Failed(null, $allocateId, "Cannot reassign the same student and tutor again."));
+        }
         $allocate = [
             "name"=> Str::uuid7(),
             "student_id" => $requested_vars['student_id'],
@@ -42,6 +50,10 @@ class ReAllocateController
         try {
             $data = Allocation::create($allocate);
             $old_allocate->delete();
+            $reallocationMail = new ReallocationTutorMail($student, $tutor);
+            $reallocationMail = new ReallocationMailStudent($student, $tutor);
+            Mail::to($student->email)->send($reallocationMail);
+            Mail::to($tutor->email)->send($reallocationMail);
             DB::commit();
         } catch (\Exception $e) {
             DB::rollBack();
