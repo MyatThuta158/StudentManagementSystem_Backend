@@ -26,8 +26,8 @@ class ReAllocateController
     {
         $requested_vars = $request->validated();
 
-        $student = Student::where($requested_vars['student_id'])->first();
-        $tutor = Tutor::where($requested_vars['tutor_id'])->first();
+        $student = Student::where("id",$requested_vars['student_id'])->first();
+        $tutor = Tutor::where("id",$requested_vars['tutor_id'])->first();
 
         $old_allocate = Allocation::where('id', $allocateId)->first();
 
@@ -50,10 +50,10 @@ class ReAllocateController
         try {
             $data = Allocation::create($allocate);
             $old_allocate->delete();
-            $reallocationMail = new ReallocationTutorMail($student, $tutor);
-            $reallocationMail = new ReallocationMailStudent($student, $tutor);
-            Mail::to($student->email)->send($reallocationMail);
-            Mail::to($tutor->email)->send($reallocationMail);
+            $reallocationTutorMail = new ReallocationTutorMail($student, $tutor);
+            $reallocationStudentMail = new ReallocationMailStudent($student, $tutor);
+            Mail::to($student->email)->send($reallocationStudentMail);
+            Mail::to($tutor->email)->send($reallocationTutorMail);
             DB::commit();
         } catch (\Exception $e) {
             DB::rollBack();
