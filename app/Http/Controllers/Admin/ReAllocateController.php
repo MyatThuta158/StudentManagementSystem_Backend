@@ -21,6 +21,8 @@ class ReAllocateController
     {
         $requested_vars = $request->validated();
 
+        $student = Student::where($requested_vars['student_id'])->get();
+
         $old_allocate = Allocation::where('id', $allocateId)->first();
 
         if ($old_allocate == null) {
