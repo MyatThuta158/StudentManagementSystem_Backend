@@ -10,6 +10,8 @@ class AuthController extends Controller
     public function login(Request $request)
     {
 
+        //   dd($request->all());
+
         try {
             $validate = $request->validate([
                 'email'    => 'required|email|string',
@@ -17,7 +19,7 @@ class AuthController extends Controller
             ]);
 
         } catch (ValidationException $e) {
-            return response()->json(['message' => $e]);
+            return response()->json(['message' => $e], 500);
         }
         //---This is for login process---//
         try {
@@ -25,11 +27,11 @@ class AuthController extends Controller
             $password = $validate['password'];
 
             //-----This check the admin table first----//
-            $admin = \App\Models\Admin::where('Email', $email)->first();
+            $admin = \App\Models\Staff::where('email', $email)->first();
 
             //dd($admin && Hash::check($password, $admin->Password));
 
-            if ($admin && Hash::check($password, $admin->Password)) {
+            if ($admin && Hash::check($password, $admin->password)) {
                 $token = $admin->createToken('token')->plainTextToken;
 
                                                             //dd($token);

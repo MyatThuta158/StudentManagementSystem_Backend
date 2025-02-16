@@ -1,5 +1,4 @@
 <?php
-
 namespace Database\Seeders;
 
 use App\Models\Staff;
@@ -13,50 +12,50 @@ class StaffSeeder extends Seeder
      */
     public function run(): void
     {
+
         Staff::truncate();
-        Staff::create([
-            "name"=>"Doris Navarro",
-            "email"=> "doris@gmail.com",
-            "password"=> bcrypt("password"),
-            "phone_number"=>"09790000000",
-            "created_at"    => Carbon::now('UTC'),
-            "updated_at"=> Carbon::now('UTC'),
-        ]);
 
-        Staff::create([
-            "name"=>"Joanne Duke",
-            "email"=> "joanne@gmail.com",
-            "password"=> bcrypt("password"),
-            "phone_number"=>"09790000004",
-            "created_at"    => Carbon::now('UTC'),
-            "updated_at"=> Carbon::now('UTC'),
-        ]);
+        $staffMembers = [
+            [
+                "name"         => "Doris Navarro3",
+                "email"        => "doris34@gmail.com",
+                "password"     => bcrypt("password"),
+                "phone_number" => "09790000000",
+            ],
+            [
+                "name"         => "Joanne Duke",
+                "email"        => "joanne3@gmail.com",
+                "password"     => bcrypt("password"),
+                "phone_number" => "09790000004",
+            ],
+            [
+                "name"         => "Alden Beck",
+                "email"        => "doris333@gmail.com",
+                "password"     => bcrypt("password"),
+                "phone_number" => "09790000003",
+            ],
+            [
+                "name"         => "Juanita Baird",
+                "email"        => "juanita3@gmail.com",
+                "password"     => bcrypt("password"),
+                "phone_number" => "09790000001",
+            ],
+            [
+                "name"         => "Wallace Cowan",
+                "email"        => "wallace3@gmail.com",
+                "password"     => bcrypt("password"),
+                "phone_number" => "09790000002",
+            ],
+        ];
 
-        Staff::create([
-            "name"=>"Alden Beck",
-            "email"=> "doris1@gmail.com",
-            "password"=> bcrypt("password"),
-            "phone_number"=>"09790000003",
-            "created_at"    => Carbon::now('UTC'),
-            "updated_at"=> Carbon::now('UTC'),
-        ]);
+        foreach ($staffMembers as $staffData) {
 
-        Staff::create([
-            "name"=>"Juanita Baird",
-            "email"=> "juanita@gmail.com",
-            "password"=> bcrypt("password"),
-            "phone_number"=>"09790000001",
-            "created_at"    => Carbon::now('UTC'),
-            "updated_at"=> Carbon::now('UTC'),
-        ]);
+            $staffData['created_at'] = Carbon::now('UTC');
+            $staffData['updated_at'] = Carbon::now('UTC');
 
-        Staff::create([
-            "name"=>"Wallace Cowan",
-            "email"=> "wallace@gmail.com",
-            "password"=> bcrypt("password"),
-            "phone_number"=>"09790000002",
-            "created_at"    => Carbon::now('UTC'),
-            "updated_at"=> Carbon::now('UTC'),
-        ]);
+            $staff = Staff::create($staffData);
+            // Assign the "staff" role to the staff member
+            $staff->assignRole('staff');
+        }
     }
 }

@@ -1,5 +1,4 @@
 <?php
-
 namespace Database\Seeders;
 
 use App\Models\Tutor;
@@ -13,55 +12,55 @@ class TutorSeeder extends Seeder
      */
     public function run(): void
     {
+
         Tutor::truncate();
-        Tutor::create([
-            "name"=>"Doris Navarro",
-            "email"=> "doristt@gmail.com",
-            "password"=> bcrypt("password"),
-            "phone_number"=>"09790000000",
-            "specialization"=>"Mathematics",
-            "created_at"    => Carbon::now('UTC'),
-            "updated_at"=> Carbon::now('UTC'),
-        ]);
 
-        Tutor::create([
-            "name"=>"Joanne Duke",
-            "email"=> "joannett@gmail.com",
-            "password"=> bcrypt("password"),
-            "phone_number"=>"09790000004",
-            "specialization"=>"English",
-            "created_at"    => Carbon::now('UTC'),
-            "updated_at"=> Carbon::now('UTC'),
-        ]);
+        $tutors = [
+            [
+                "name"           => "Doris Navarro1",
+                "email"          => "doristt1@gmail.com",
+                "password"       => bcrypt("password"),
+                "phone_number"   => "09790000000",
+                "specialization" => "Mathematics",
+            ],
+            [
+                "name"           => "Joanne Duke1",
+                "email"          => "joannett1@gmail.com",
+                "password"       => bcrypt("password"),
+                "phone_number"   => "09790000004",
+                "specialization" => "English",
+            ],
+            [
+                "name"           => "Alden Beck1",
+                "email"          => "doristta1@gmail.com",
+                "password"       => bcrypt("password"),
+                "phone_number"   => "09790000003",
+                "specialization" => "English",
+            ],
+            [
+                "name"           => "Juanita Baird1",
+                "email"          => "juanitatt1@gmail.com",
+                "password"       => bcrypt("password"),
+                "phone_number"   => "09790000001",
+                "specialization" => "English",
+            ],
+            [
+                "name"           => "Wallace Cowan1",
+                "email"          => "wallacett1@gmail.com",
+                "password"       => bcrypt("password"),
+                "phone_number"   => "09790000002",
+                "specialization" => "English",
+            ],
+        ];
 
-        Tutor::create([
-            "name"=>"Alden Beck",
-            "email"=> "doristta@gmail.com",
-            "password"=> bcrypt("password"),
-            "phone_number"=>"09790000003",
-            "specialization"=>"English",
-            "created_at"    => Carbon::now('UTC'),
-            "updated_at"=> Carbon::now('UTC'),
-        ]);
+        foreach ($tutors as $tutorData) {
 
-        Tutor::create([
-            "name"=>"Juanita Baird",
-            "email"=> "juanitatt@gmail.com",
-            "password"=> bcrypt("password"),
-            "phone_number"=>"09790000001",
-            "specialization"=>"English",
-            "created_at"    => Carbon::now('UTC'),
-            "updated_at"=> Carbon::now('UTC'),
-        ]);
+            $tutorData['created_at'] = Carbon::now('UTC');
+            $tutorData['updated_at'] = Carbon::now('UTC');
 
-        Tutor::create([
-            "name"=>"Wallace Cowan",
-            "email"=> "wallacett@gmail.com",
-            "password"=> bcrypt("password"),
-            "phone_number"=>"09790000002",
-            "specialization"=>"English",
-            "created_at"    => Carbon::now('UTC'),
-            "updated_at"=> Carbon::now('UTC'),
-        ]);
+            $tutor = Tutor::create($tutorData);
+            // Assign the "tutor" role
+            $tutor->assignRole('tutor');
+        }
     }
 }
