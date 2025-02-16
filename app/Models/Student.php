@@ -11,7 +11,8 @@ class Student extends Authenticatable
 {
     use HasFactory, Notifiable, HasApiTokens, HasRoles;
 
-    protected $fillable = ['name', 'email', 'password', 'phone_number'];
+    protected $guard_name = 'api';
+    protected $fillable   = ['name', 'email', 'password', 'phone_number'];
 
     public function allocations()
     {

@@ -11,7 +11,8 @@ class Tutor extends Authenticatable
 {
     use HasFactory, Notifiable, HasApiTokens, HasRoles;
 
-    protected $fillable = ['name', 'email', 'password', 'phone_number', 'specialization'];
+    protected $guard_name = 'api';
+    protected $fillable   = ['name', 'email', 'password', 'phone_number', 'specialization'];
 
     public function allocations()
     {
