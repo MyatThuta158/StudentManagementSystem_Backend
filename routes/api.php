@@ -14,10 +14,12 @@ Route::post('/user/register', [App\Http\Controllers\RegisterController::class, '
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::put('/allocations/{allocateId}', [ReAllocateController::class, 'reallocate']);
-                                                                           // allocation start
+    // allocation start
     Route::get('allocations', [AllocationController::class, 'index']);     // Retrieve all allocations
+    Route::get('allocations/detail/{id}', [AllocationController::class, 'detail']);
     Route::get('allocations/{id}', [AllocationController::class, 'show']); // Retrieve a single allocation
     Route::post('allocations', [AllocationController::class, 'store']);    // Store allocation
-                                                                           //allocation end
+    //allocation end
 
+    
 });
