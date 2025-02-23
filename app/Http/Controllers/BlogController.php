@@ -25,8 +25,8 @@ class BlogController extends Controller
         $user = Auth::user();
         // dd($user->hasRole('manager'));
 
-        // Check if the authenticated user is a 'manager'
-        if (! $user || ! $user->can('manage blog ')) {
+        // Check if the authenticated user is a 'student' or 'tutor'
+        if (! $user || ! $user->can('manage blog')) {
             return response()->json(['error' => 'Only tutors and students can register new admins.'], 403);
         }
 
