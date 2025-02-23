@@ -8,11 +8,11 @@ use App\Models\Allocation;
 use App\Models\Student;
 use App\Models\Tutor;
 use App\ResponseModel\ResponseModel;
-use DB;
 use Illuminate\Database\Eloquent\Model;
 use Log;
-use Mail;
-use Str;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Str;
 
 class ReAllocateController
 {
