@@ -1,9 +1,10 @@
 <?php
 
-use App\Http\Controllers\Admin\ReAllocateController;
-use App\Http\Controllers\AllocationController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\CommentController;
+use App\Http\Controllers\AllocationController;
+use App\Http\Controllers\Admin\ReAllocateController;
 
 Route::get('/user', function (Request $request) {
     return $request->user();
@@ -20,6 +21,12 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('allocations/{id}', [AllocationController::class, 'show']); // Retrieve a single allocation
     Route::post('allocations', [AllocationController::class, 'store']);    // Store allocation
     //allocation end
+});
 
-    
+Route::middleware('auth:sanctum')->group(function () {
+    Route::get('/comments', [CommentController::class, 'index']);     // List all comments
+    Route::post('/comments', [CommentController::class, 'store']);   // Add a comment
+    Route::get('/comments/{id}', [CommentController::class, 'show']); // Get a single comment
+    Route::put('/comments/{id}', [CommentController::class, 'update']); // Update a comment
+    Route::delete('/comments/{id}', [CommentController::class, 'destroy']); // Delete a comment
 });
