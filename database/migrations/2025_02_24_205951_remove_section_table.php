@@ -19,6 +19,10 @@ return new class extends Migration
      */
     public function down(): void
     {
-        //
+        Schema::create('sections', function (Blueprint $table) {
+            $table->id();
+            $table->string("name"); // somekind of template
+            $table->timestampsTz();
+        });
     }
 };
