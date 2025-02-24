@@ -32,16 +32,7 @@ class AllocationController extends Controller
     public function show($id)
     {
         $allocation = Allocation::find($id); // Find allocation by ID
-        if (!$allocation) {
-            return response()->json(['message' => 'Allocation not found'], 404);
-        }
 
-        return response()->json(['allocation' => $allocation], 200);
-    }
-
-    public function detail($id)
-    {
-        $allocation = Allocation::with(['student','section', 'section.blogs' , 'section.blogs.comments' ,'tutor'])->find($id); // Find allocation by ID
         if (!$allocation) {
             return response()->json(['message' => 'Allocation not found'], 404);
         }
