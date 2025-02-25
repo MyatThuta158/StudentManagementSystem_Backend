@@ -67,7 +67,39 @@ class BlogController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $user = Auth::user();
+
+        // Check if the authenticated user has permission to manage the blog
+        if (! $user || ! $user->can('manage blog')) {
+            return response()->json(['error' => 'Only tutors and students can update blogs.'], 403);
+        }
+
+        // Retrieve the blog record by its ID
+        $blog = Blog::find($id);
+        if (! $blog) {
+            return response()->json(['error' => 'Blog not found.'], 404);
+        }
+
+        try {
+            // Validate the incoming request data
+            // Using 'sometimes' allows partial updates (only provided fields are validated)
+            $validatedData = $request->validate([
+                'author'     => 'sometimes|required|string|max:255',
+                'student_id' => 'sometimes|required|exists:students,id',
+                'tutor_id'   => 'sometimes|required|exists:tutors,id',
+                'section_id' => 'sometimes|required|exists:sections,id',
+                'body'       => 'sometimes|required',
+                'header'     => 'sometimes|required|string|max:255',
+            ]);
+        } catch (ValidationException $e) {
+            return response()->json(['errors' => $e->errors()], 422);
+        }
+
+        // Update the blog record using the validated data
+        $blog->update($validatedData);
+
+        // Return a JSON response with the updated blog data and a 200 status code
+        return response()->json($blog, 200);
     }
 
     /**
