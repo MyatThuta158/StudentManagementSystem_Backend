@@ -13,7 +13,6 @@ return new class extends Migration
     {
         Schema::create('allocations', function (Blueprint $table) {
             $table->id();
-            $table->string("name");
             $table->string("allocation_date");
             $table->string("allocated_by");
             $table->unsignedBigInteger("staff_id");

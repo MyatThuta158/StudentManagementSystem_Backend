@@ -10,10 +10,9 @@ class Allocation extends Model
 {
     use HasFactory, SoftDeletes;
 
-    protected $table = 'allocations'; // ✅ Explicit table name
+    protected $table = 'allocations'; //  Explicit table name
 
     protected $fillable = [
-        'name',
         'allocation_date',
         'allocated_by',
         'staff_id',

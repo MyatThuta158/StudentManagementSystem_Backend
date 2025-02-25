@@ -4,8 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Models\Allocation;
 use Illuminate\Http\Request;
+use Illuminate\Routing\Controller;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Log; // ✅ Add this
+use Illuminate\Support\Facades\Log;
 
 class AllocationController extends Controller
 {
@@ -14,10 +16,9 @@ class AllocationController extends Controller
      */
     public function store(Request $request)
     {
-        Log::info("🔥 Creating Allocation", ['request' => $request->all()]);
+        Log::info(" Creating Allocation", ['request' => $request->all()]);
 
         $request->validate([
-            'name' => 'required|string|max:255',
             'allocation_date' => 'required|date',
             'tutor_id' => 'required|exists:tutors,id',
             'student_id' => 'required|exists:students,id',
@@ -26,12 +27,11 @@ class AllocationController extends Controller
         $staff = Auth::user();
 
         if (!$staff) {
-            Log::error("❌ Unauthorized access attempt to create allocation");
+            Log::error(" Unauthorized access attempt to create allocation");
             return response()->json(['error' => 'Unauthorized. Please login as staff.'], 401);
         }
 
         $allocation = Allocation::create([
-            'name' => $request->name,
             'allocation_date' => $request->allocation_date,
             'allocated_by' => $staff->name,
             'staff_id' => $staff->id,
@@ -39,14 +39,13 @@ class AllocationController extends Controller
             'student_id' => $request->student_id,
         ]);
 
-        Log::info("✅ Allocation Created Successfully", ['allocation' => $allocation]);
+        Log::info(" Allocation Created Successfully", ['allocation' => $allocation]);
 
         return response()->json([
             'message' => 'Allocation created successfully!',
             'allocation' => $allocation
         ], 201);
     }
-
 
     /**
      * Get all allocations with details
@@ -76,37 +75,34 @@ class AllocationController extends Controller
     }
 
 
-
     public function search(Request $request)
     {
-        try {
-            Log::info("🔍 Search Request Received", ['params' => $request->all()]);
+        $request->validate([
+            'query' => 'required|string|min:1',
+        ]);
 
-            $query = Allocation::query();
+        $search = $request->input('query');
 
-            if ($request->has('name')) {
-                Log::info("🔎 Filtering by name", ['name' => $request->name]);
-                $query->whereRaw("name ILIKE ?", ["%" . $request->name . "%"]);
-            }
+        // Log search input
+        Log::info("Search Query: " . $search);
 
-            // ✅ Fetch data and force return before empty check
-            $allocations = $query->with(['staff', 'tutor', 'student'])->get();
+        // Search for allocations linked to tutors or students
+        $allocations = Allocation::with(['staff', 'tutor', 'student'])
+            ->whereHas('tutor', function ($query) use ($search) {
+                $query->where('name', 'ILIKE', "%{$search}%"); // Use ILIKE for PostgreSQL (Case-Insensitive)
+            })
+            ->orWhereHas('student', function ($query) use ($search) {
+                $query->where('name', 'ILIKE', "%{$search}%");
+            })
+            ->get();
 
-            // **Debugging: Return the raw SQL query and results**
-            return response()->json([
-                'debug' => [
-                    'request' => $request->all(),
-                    'sql' => $query->toSql(),
-                    'bindings' => $query->getBindings(),
-                    'allocations' => $allocations // ✅ Show actual data
-                ]
-            ], 200);
-        } catch (\Exception $e) {
-            Log::error("❌ Error in search", ['error' => $e->getMessage()]);
-            return response()->json([
-                'error' => 'Something went wrong!',
-                'debug' => $e->getMessage()
-            ], 500);
+        // Log results
+        Log::info("Search Results: ", $allocations->toArray());
+
+        if ($allocations->isEmpty()) {
+            return response()->json(['message' => 'Allocation not found'], 404);
         }
+
+        return response()->json(['allocations' => $allocations], 200);
     }
 }
