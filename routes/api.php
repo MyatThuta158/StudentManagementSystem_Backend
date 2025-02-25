@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\BulkAllocationController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CommentController;
@@ -20,7 +21,12 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('allocations/detail/{id}', [AllocationController::class, 'detail']);
     Route::get('allocations/{id}', [AllocationController::class, 'show']); // Retrieve a single allocation
     Route::post('allocations', [AllocationController::class, 'store']);    // Store allocation
+    Route::post('bulk/allocations', [BulkAllocationController::class, 'allocate']);
     //allocation end
+
+    // show non-allocated student
+    Route::get('student/nonallocate', [BulkAllocationController::class, 'nonAllocatedStudentList']);
+    // end non-allocated student
 });
 
 Route::middleware('auth:sanctum')->group(function () {
