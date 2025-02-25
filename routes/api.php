@@ -17,18 +17,18 @@ Route::post('/user/register', [App\Http\Controllers\RegisterController::class, '
 Route::middleware('auth:sanctum')->group(function () {
     Route::put('/allocations/{allocateId}', [ReAllocateController::class, 'reallocate']);
     // allocation start
-    Route::get('allocations', [AllocationController::class, 'index']);     // Retrieve all allocations
-    Route::get('allocations/detail/{id}', [AllocationController::class, 'detail']);
-    Route::get('allocations/{id}', [AllocationController::class, 'show']); // Retrieve a single allocation
-    Route::post('allocations', [AllocationController::class, 'store']);    // Store allocation
+    Route::get('allocations', [AllocationController::class, 'index']);
+    Route::get('allocations/{id}', [AllocationController::class, 'show']);
+    Route::post('allocations', [AllocationController::class, 'store']);
     Route::post('bulk/allocations', [BulkAllocationController::class, 'allocate']);
+
     //allocation end
 
     // show non-allocated student
     Route::get('student/nonallocate', [BulkAllocationController::class, 'nonAllocatedStudentList']);
     // end non-allocated student
 });
-
+Route::get('/allocations/search', [AllocationController::class, 'search']);
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/comments', [CommentController::class, 'index']);     // List all comments
     Route::post('/comments', [CommentController::class, 'store']);   // Add a comment
@@ -36,3 +36,6 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::put('/comments/{id}', [CommentController::class, 'update']); // Update a comment
     Route::delete('/comments/{id}', [CommentController::class, 'destroy']); // Delete a comment
 });
+
+
+

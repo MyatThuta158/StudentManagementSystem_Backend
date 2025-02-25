@@ -23,10 +23,6 @@ class Blog extends Model
         return $this->belongsTo(Student::class, 'student_id');
     }
 
-    public function sections()
-    {
-        return $this->belongsTo(Section::class);
-    }
 
     public function comments()
     {

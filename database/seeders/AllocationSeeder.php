@@ -18,7 +18,6 @@ class AllocationSeeder extends Seeder
         Allocation::create([
             "student_id"=>1,
             "tutor_id"=>1,
-            "section_id"=>1,
             "staff_id"=>1,
             "name"=> "Hello World",
             "allocated_by"=> "Kyawe",

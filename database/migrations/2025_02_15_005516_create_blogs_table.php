@@ -16,10 +16,8 @@ return new class extends Migration
             $table->string("author");
             $table->unsignedBigInteger("student_id");
             $table->unsignedBigInteger("tutor_id");
-            $table->unsignedBigInteger("section_id");
             $table->foreign("tutor_id")->on("tutors")->references("id")->onDelete("cascade");
             $table->foreign("student_id")->on("students")->references("id")->onDelete("cascade");
-            $table->foreign("section_id")->on("sections")->references("id")->onDelete("cascade");
             $table->text("body");
             $table->string("header");
             $table->softDeletesTz();

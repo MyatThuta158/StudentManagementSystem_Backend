@@ -8,7 +8,9 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Allocation extends Model
 {
-    use HasFactory,SoftDeletes;
+    use HasFactory, SoftDeletes;
+
+    protected $table = 'allocations'; // ✅ Explicit table name
 
     protected $fillable = [
         'name',
@@ -17,26 +19,21 @@ class Allocation extends Model
         'staff_id',
         'tutor_id',
         'student_id',
-        'section_id',
     ];
 
     public function staff()
     {
-        return $this->belongsTo(Staff::class);
+        return $this->belongsTo(Staff::class, 'staff_id');
     }
 
     public function tutor()
     {
-        return $this->belongsTo(Tutor::class);
+        return $this->belongsTo(Tutor::class, 'tutor_id');
     }
 
     public function student()
     {
-        return $this->belongsTo(Student::class);
-    }
-
-    public function section()
-    {
-        return $this->belongsTo(Section::class);
+        return $this->belongsTo(Student::class, 'student_id');
     }
 }
+
