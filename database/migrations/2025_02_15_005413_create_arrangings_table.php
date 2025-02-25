@@ -13,14 +13,12 @@ return new class extends Migration
     {
         Schema::create('arrangings', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger("section_id");
             $table->dateTimeTz("arrange_date");
             $table->unsignedBigInteger("student_id")->nullable();
             $table->unsignedBigInteger("tutor_id")->nullable();
             $table->enum("type",["meeting","assignments"]);
             $table->foreign("tutor_id")->on("tutors")->references("id")->onDelete("cascade");
             $table->foreign("student_id")->on("students")->references("id")->onDelete("cascade");
-            $table->foreign("section_id")->on("sections")->references("id")->onDelete("cascade");
             $table->timestampsTz();
         });
     }

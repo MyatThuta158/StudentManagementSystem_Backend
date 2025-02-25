@@ -35,7 +35,7 @@ class BulkAllocationController extends Controller
         try {
             foreach($tmpAllocate as $i){
                 Allocation::create($i);
-                // send notification 
+                // send notification
 
                 // end send notification
             }
