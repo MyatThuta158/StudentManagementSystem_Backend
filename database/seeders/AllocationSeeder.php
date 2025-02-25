@@ -19,7 +19,6 @@ class AllocationSeeder extends Seeder
             "student_id"=>1,
             "tutor_id"=>1,
             "staff_id"=>1,
-            "name"=> "Hello World",
             "allocated_by"=> "Kyawe",
             "allocation_date"=>Carbon::now('UTC')->toDateString()
         ]);
