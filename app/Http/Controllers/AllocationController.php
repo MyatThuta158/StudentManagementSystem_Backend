@@ -74,35 +74,4 @@ class AllocationController extends Controller
         return response()->json(['allocation' => $allocation], 200);
     }
 
-
-    public function search(Request $request)
-    {
-        $request->validate([
-            'query' => 'required|string|min:1',
-        ]);
-
-        $search = $request->input('query');
-
-        // Log search input
-        Log::info("Search Query: " . $search);
-
-        // Search for allocations linked to tutors or students
-        $allocations = Allocation::with(['staff', 'tutor', 'student'])
-            ->whereHas('tutor', function ($query) use ($search) {
-                $query->where('name', 'ILIKE', "%{$search}%"); // Use ILIKE for PostgreSQL (Case-Insensitive)
-            })
-            ->orWhereHas('student', function ($query) use ($search) {
-                $query->where('name', 'ILIKE', "%{$search}%");
-            })
-            ->get();
-
-        // Log results
-        Log::info("Search Results: ", $allocations->toArray());
-
-        if ($allocations->isEmpty()) {
-            return response()->json(['message' => 'Allocation not found'], 404);
-        }
-
-        return response()->json(['allocations' => $allocations], 200);
-    }
 }
