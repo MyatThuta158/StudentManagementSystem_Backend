@@ -20,7 +20,6 @@ class DatabaseSeeder extends Seeder
             $this->call(TutorSeeder::class);
             $this->call(StudentSeeder::class);
             $this->call(StaffSeeder::class);
-            $this->call(SectionSeeder::class);
             $this->call(AllocationSeeder::class);
             
             \DB::commit();

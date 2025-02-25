@@ -13,6 +13,10 @@ class Staff extends Authenticatable
 
     protected $guard_name = 'api';
     protected $fillable   = ['name', 'email', 'password', 'phone_number'];
+    protected $hidden = [
+        'password',
+        'remember_token',
+    ];
 
     public function allocations()
     {

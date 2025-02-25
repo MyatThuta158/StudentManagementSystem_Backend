@@ -14,6 +14,7 @@ return new class extends Migration
     {
         Schema::table('allocations', function (Blueprint $table) {
             $table->dropForeignIdFor(Section::class, 'section_id');
+            $table->dropColumn('name');
         });
     }
 
