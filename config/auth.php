@@ -35,12 +35,23 @@ return [
     |
     */
 
-    'guards'           => [
+    'guards' => [
         'web' => [
-            'driver'   => 'session',
+            'driver' => 'session',
             'provider' => 'users',
         ],
-        
+        'tutor' => [
+            'driver' => 'session',
+            'provider' => 'tutors',
+        ],
+        'student' => [
+            'driver' => 'session',
+            'provider' => 'students',
+        ],
+        'staff' => [  // ✅ Add staff authentication guard
+            'driver' => 'sanctum',
+            'provider' => 'staff',
+        ],
     ],
 
     /*
@@ -60,15 +71,22 @@ return [
     |
     */
 
-    'providers'        => [
+    'providers' => [
         'users' => [
             'driver' => 'eloquent',
-            'model'  => env('AUTH_MODEL', App\Models\User::class),
+            'model' => App\Models\User::class,
         ],
-        'api' => [
-            'driver' => 'passport',
-            'provider' => 'users',
-            'hash' => false
+        'tutors' => [
+            'driver' => 'eloquent',
+            'model' => App\Models\Tutor::class,
+        ],
+        'students' => [
+            'driver' => 'eloquent',
+            'model' => App\Models\Student::class,
+        ],
+        'staff' => [  // ✅ Define staff provider
+            'driver' => 'eloquent',
+            'model' => App\Models\Staff::class,
         ],
 
         // 'users' => [

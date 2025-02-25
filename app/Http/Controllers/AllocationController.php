@@ -16,7 +16,7 @@ class AllocationController extends Controller
      */
     public function store(Request $request)
     {
-        Log::info(" Creating Allocation", ['request' => $request->all()]);
+        Log::info("Creating Allocation", ['request' => $request->all()]);
 
         $request->validate([
             'allocation_date' => 'required|date',
@@ -27,10 +27,17 @@ class AllocationController extends Controller
         $staff = Auth::user();
 
         if (!$staff) {
-            Log::error(" Unauthorized access attempt to create allocation");
+            Log::error("Unauthorized access attempt to create allocation");
             return response()->json(['error' => 'Unauthorized. Please login as staff.'], 401);
         }
 
+        // ✅ Check if the student is already allocated to a tutor
+        $existingAllocation = Allocation::where('student_id', $request->student_id)->first();
+        if ($existingAllocation) {
+            return response()->json(['error' => 'This student is already allocated to a tutor.'], 409);
+        }
+
+        // ✅ Proceed with creating the allocation if the student is not allocated
         $allocation = Allocation::create([
             'allocation_date' => $request->allocation_date,
             'allocated_by' => $staff->name,
@@ -39,7 +46,7 @@ class AllocationController extends Controller
             'student_id' => $request->student_id,
         ]);
 
-        Log::info(" Allocation Created Successfully", ['allocation' => $allocation]);
+        Log::info("Allocation Created Successfully", ['allocation' => $allocation]);
 
         return response()->json([
             'message' => 'Allocation created successfully!',
@@ -47,15 +54,18 @@ class AllocationController extends Controller
         ], 201);
     }
 
+
     /**
      * Get all allocations with details
      */
-    public function index()
+    public function index(Request $request)
     {
-        $allocations = Allocation::with(['staff', 'tutor', 'student'])->get();
+        $perPage = $request->query('per_page', 1); // Default 10 per page
+        $allocations = Allocation::with(['staff', 'tutor', 'student'])->paginate($perPage);
 
-        return response()->json(['allocations' => $allocations], 200);
+        return response()->json($allocations, 200);
     }
+
 
     /**
      * Get a single allocation with details
@@ -73,5 +83,25 @@ class AllocationController extends Controller
 
         return response()->json(['allocation' => $allocation], 200);
     }
+    public function search(Request $request)
+    {
+        $perPage = $request->query('per_page', 10); // Default 10 per page
+        $query = Allocation::with(['staff', 'tutor', 'student']);
 
+        if ($request->has('tutor_name')) {
+            $query->whereHas('tutor', function ($q) use ($request) {
+                $q->where('name', 'like', '%' . $request->tutor_name . '%');
+            });
+        }
+
+        if ($request->has('student_name')) {
+            $query->whereHas('student', function ($q) use ($request) {
+                $q->where('name', 'like', '%' . $request->student_name . '%');
+            });
+        }
+
+        $allocations = $query->paginate($perPage); // Apply pagination
+
+        return response()->json($allocations, 200);
+    }
 }

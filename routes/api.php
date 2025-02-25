@@ -18,9 +18,9 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::put('/allocations/{allocateId}', [ReAllocateController::class, 'reallocate']);
     // allocation start
     Route::get('allocations', [AllocationController::class, 'index']);
+    Route::get('/allocations/search', [AllocationController::class, 'search']);
     Route::get('allocations/{id}', [AllocationController::class, 'show']);
     Route::post('allocations', [AllocationController::class, 'store']);
-    Route::get('/allocations/search', [AllocationController::class, 'search']);
     Route::post('bulk/allocations', [BulkAllocationController::class, 'allocate']);
 
     //allocation end
@@ -33,7 +33,7 @@ Route::middleware('auth:sanctum')->group(function () {
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/comments', [CommentController::class, 'index']);     // List all comments
     Route::post('/comments', [CommentController::class, 'store']);   // Add a comment
-    Route::get('/comments/{id}', [CommentController::class, 'show']); // Get a single comment
     Route::put('/comments/{id}', [CommentController::class, 'update']); // Update a comment
+    Route::get('/comments/{id}', [CommentController::class, 'show']); // Get a single comment
     Route::delete('/comments/{id}', [CommentController::class, 'destroy']); // Delete a comment
 });
