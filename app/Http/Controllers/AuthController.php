@@ -38,19 +38,19 @@ class AuthController extends Controller
                 $cookie = cookie('token', $token, 60 * 24); // 1 day
                                                             // dd($cookie);
                 return response()
-                    ->json(['message' => 'Admin login successful!', 'user' => $admin, 'token' => $token])
+                    ->json(['message' => 'Admin login successful!', 'token' => $token, 'role' => 'admin'])
                     ->withCookie($cookie);
             }
 
-            $teacher = \App\Models\Tutor::where('email', $email)->first();
+            $tutor = \App\Models\Tutor::where('email', $email)->first();
 
             // dd($user);
-            if ($teacher && Hash::check($password, $teacher->password)) {
+            if ($tutor && Hash::check($password, $tutor->password)) {
                 // Generate token for user
-                $token  = $teacher->createToken('user_token')->plainTextToken;
+                $token  = $tutor->createToken('user_token')->plainTextToken;
                 $cookie = cookie('token', $token, 60 * 24); // 1 day
                 return response()
-                    ->json(['message' => 'User login successful!', 'user' => $teacher, 'token' => $token])
+                    ->json(['message' => 'Tutor login successful!', 'token' => $token, 'role' => 'tutor'])
                     ->withCookie($cookie);
             }
 
@@ -62,7 +62,7 @@ class AuthController extends Controller
                 $token  = $student->createToken('user_token')->plainTextToken;
                 $cookie = cookie('token', $token, 60 * 24); // 1 day
                 return response()
-                    ->json(['message' => 'User login successful!', 'user' => $student, 'token' => $token])
+                    ->json(['message' => 'Student login successful!', 'token' => $token, 'student' => 'student'])
                     ->withCookie($cookie);
             }
 
