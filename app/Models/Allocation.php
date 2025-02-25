@@ -36,3 +36,4 @@ class Allocation extends Model
     }
 }
 
+

@@ -4,8 +4,6 @@ namespace Database\Seeders;
 
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
-// use Illuminate\Database\Console\Seeds\WithoutModelEvents;
-use App\Models\User;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -23,6 +21,7 @@ class DatabaseSeeder extends Seeder
             $this->call(StudentSeeder::class);
             $this->call(StaffSeeder::class);
             $this->call(AllocationSeeder::class);
+            $this->call(BlogSeeder::class); // ✅ Add BlogSeeder
 
             DB::commit();
         } catch (\Exception $e) {

@@ -33,7 +33,7 @@ class Comments extends Model
      */
     public function student()
     {
-        return $this->belongsTo(\App\Models\Student::class, 'student_id')->withDefault();
+        return $this->belongsTo(\App\Models\Student::class, 'student_id');
     }
 
     /**
@@ -41,6 +41,6 @@ class Comments extends Model
      */
     public function tutor()
     {
-        return $this->belongsTo(\App\Models\Tutor::class, 'tutor_id')->withDefault();
+        return $this->belongsTo(\App\Models\Tutor::class, 'tutor_id');
     }
 }
