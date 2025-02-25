@@ -59,7 +59,16 @@ class BlogController extends Controller
      */
     public function show(string $id)
     {
-        //
+        // Retrieve the blog record by its ID
+        $blog = Blog::find($id);
+
+        // Check if the blog exists
+        if (! $blog) {
+            return response()->json(['error' => 'Blog not found.'], 404);
+        }
+
+        // Return a JSON response with the blog data
+        return response()->json($blog, 200);
     }
 
     /**
@@ -105,8 +114,31 @@ class BlogController extends Controller
     /**
      * Remove the specified resource from storage.
      */
+    /**
+     * Remove the specified resource from storage.
+     */
     public function destroy(string $id)
     {
-        //
+        $user = Auth::user();
+
+        // Check if the authenticated user has permission to manage the blog
+        if (! $user || ! $user->can('manage blog')) {
+            return response()->json(['error' => 'Only tutors and students can delete blogs.'], 403);
+        }
+
+        // Retrieve the blog record by its ID
+        $blog = Blog::find($id);
+
+        // Check if the blog exists
+        if (! $blog) {
+            return response()->json(['error' => 'Blog not found.'], 404);
+        }
+
+        // Delete the blog post
+        $blog->delete();
+
+        // Return a success response
+        return response()->json(['message' => 'Blog deleted successfully.'], 200);
     }
+
 }
