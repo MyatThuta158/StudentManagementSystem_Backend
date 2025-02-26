@@ -12,7 +12,7 @@ class Tutor extends Authenticatable
     use HasFactory, Notifiable, HasApiTokens, HasRoles;
 
     protected $guard_name = 'api';
-    protected $table = 'tutors'; // ✅ Explicit table name
+    protected $table = 'tutors';
 
     protected $fillable = ['name', 'email', 'password', 'phone_number', 'specialization'];
 
@@ -30,7 +30,7 @@ class Tutor extends Authenticatable
 
     public function comments()
     {
-        return $this->hasMany(Comments::class, 'tutor_id'); // ✅ Fix reference
+        return $this->hasMany(Comments::class, 'tutor_id');
     }
 }
 
