@@ -1,12 +1,12 @@
 <?php
 
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\TutorController;
-use App\Http\Controllers\CommentController;
+use App\Http\Controllers\Admin\ReAllocateController;
 use App\Http\Controllers\AllocationController;
 use App\Http\Controllers\BulkAllocationController;
-use App\Http\Controllers\Admin\ReAllocateController;
+use App\Http\Controllers\CommentController;
+use App\Http\Controllers\TutorController;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Route;
 
 Route::get('/user', function (Request $request) {
     return $request->user();
@@ -36,6 +36,10 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/blogs/{id}', [App\Http\Controllers\BlogController::class, 'update']);    //----Blog update---//
     Route::delete('/blogs/{id}', [App\Http\Controllers\BlogController::class, 'destroy']); ///----Blog delete---//
                                                                                            //////End of blog routes//////
+
+    //------This is for student's search, views routes------//
+    Route::get('/students/lists', [App\Http\Controllers\StudentController::class, 'index']);
+    Route::get('/students/search', [App\Http\Controllers\StudentController::class, 'search']);
 });
 
 Route::middleware('auth:sanctum')->group(function () {
