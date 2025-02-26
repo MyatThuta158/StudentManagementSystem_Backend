@@ -32,7 +32,7 @@ Route::middleware('auth:sanctum')->group(function () {
                                                                                            //Blog Routes start
     Route::get('/blogs/{id}', [App\Http\Controllers\BlogController::class, 'show']);       //---Show single blog---//
     Route::post('/blogs', [App\Http\Controllers\BlogController::class, 'store']);          ///--Blog Create---//
-    Route::put('/blogs/{id}', [App\Http\Controllers\BlogController::class, 'update']);     //----Blog update---//
+    Route::post('/blogs/{id}', [App\Http\Controllers\BlogController::class, 'update']);    //----Blog update---//
     Route::delete('/blogs/{id}', [App\Http\Controllers\BlogController::class, 'destroy']); ///----Blog delete---//
                                                                                            //////End of blog routes//////
 });
