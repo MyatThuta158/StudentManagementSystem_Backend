@@ -12,15 +12,15 @@ class Staff extends Authenticatable
     use HasFactory, Notifiable, HasApiTokens, HasRoles;
 
     protected $guard_name = 'api';
-    protected $fillable   = ['name', 'email', 'password', 'phone_number'];
-    protected $hidden = [
-        'password',
-        'remember_token',
-    ];
+    protected $table = 'staffs'; // ✅ Explicit table name
+
+    protected $fillable = ['name', 'email', 'password', 'phone_number'];
+
+    protected $hidden = ['password', 'remember_token'];
 
     public function allocations()
     {
-        return $this->hasMany(Allocation::class);
+        return $this->hasMany(Allocation::class, 'staff_id');
     }
-    protected $table = "staffs";
 }
+

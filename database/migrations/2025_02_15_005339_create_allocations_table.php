@@ -13,18 +13,15 @@ return new class extends Migration
     {
         Schema::create('allocations', function (Blueprint $table) {
             $table->id();
-            $table->string("name");
             $table->string("allocation_date");
             $table->string("allocated_by");
             $table->unsignedBigInteger("staff_id");
             $table->unsignedBigInteger("tutor_id");
             $table->unsignedBigInteger("student_id");
-            $table->unsignedBigInteger("section_id");
             // if we are using foreign key or from mis?
             $table->foreign("tutor_id")->on("tutors")->references("id")->onDelete("cascade");
             $table->foreign("student_id")->on("students")->references("id")->onDelete("cascade");
             $table->foreign("staff_id")->on("staffs")->references("id")->onDelete("cascade");
-            $table->foreign("section_id")->on("sections")->references("id")->onDelete("cascade");
             // endregion
             $table->softDeletes();
             $table->timestampsTz();

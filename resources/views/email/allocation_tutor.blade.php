@@ -24,8 +24,8 @@
 </head>
 <body>
 <div style="margin: 1em;">
-    <h1>Reallocation</h1>
-    <p>You are reallocated with student {{$student_name}} please check in application.</p>
+    <h1>Allocation</h1>
+    <p>You are allocated with student {{$student_name}} please check in application.</p>
     <br />
     <a href={{$url}} class="btn">click Here To Watch</a>
 </div>

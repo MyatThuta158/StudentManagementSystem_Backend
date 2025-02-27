@@ -62,7 +62,7 @@ class AuthController extends Controller
                 $token  = $student->createToken('user_token')->plainTextToken;
                 $cookie = cookie('token', $token, 60 * 24); // 1 day
                 return response()
-                    ->json(['message' => 'Student login successful!', 'token' => $token, 'student' => 'student'])
+                    ->json(['message' => 'Student login successful!', 'token' => $token, 'role' => 'student'])
                     ->withCookie($cookie);
             }
 

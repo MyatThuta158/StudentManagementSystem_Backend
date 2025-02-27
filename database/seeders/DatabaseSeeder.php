@@ -2,8 +2,8 @@
 
 namespace Database\Seeders;
 
-use App\Models\User;
-// use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -13,19 +13,20 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        try{
-            \DB::beginTransaction();
-            
+        try {
+            DB::beginTransaction();
+
             $this->call(RoleAndPermissionSeeder::class);
             $this->call(TutorSeeder::class);
             $this->call(StudentSeeder::class);
             $this->call(StaffSeeder::class);
             $this->call(AllocationSeeder::class);
-            
-            \DB::commit();
-        }catch(\Exception $e){
-            \DB::rollBack();
-            \Log::error($e->getMessage());
+            $this->call(BlogSeeder::class); // ✅ Add BlogSeeder
+
+            DB::commit();
+        } catch (\Exception $e) {
+            DB::rollBack();
+            Log::error("❌ Seeding failed: " . $e->getMessage());
         }
     }
 }
