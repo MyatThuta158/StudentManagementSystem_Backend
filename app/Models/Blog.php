@@ -5,7 +5,16 @@ use Illuminate\Database\Eloquent\Model;
 
 class Blog extends Model
 {
-    protected $guarded = [];
+    protected $guarded  = [];
+    protected $fillable = [
+        'author',
+        'author_role',
+        'title',
+        'content',
+        'tutor_id',
+        'student_id',
+        'DocumentFile',
+    ];
 
     /**
      * Get the tutor associated with the blog.
@@ -22,7 +31,6 @@ class Blog extends Model
     {
         return $this->belongsTo(Student::class, 'student_id');
     }
-
 
     public function comments()
     {

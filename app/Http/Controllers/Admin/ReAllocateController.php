@@ -9,6 +9,8 @@ use App\Models\Arranging;
 use App\Models\Blog;
 use App\Models\Student;
 use App\Models\Tutor;
+use App\Notifications\ReallocatedStudent;
+use App\Notifications\ReallocatedTutor;
 use App\ResponseModel\ResponseModel;
 use Illuminate\Database\Eloquent\Model;
 use Log;
@@ -54,24 +56,16 @@ class ReAllocateController
             try {
                 // get required data and update
                 $data = Allocation::create($allocate);
-                $old_blogs = Blog::where('tutor_id', $old_allocate->tutor_id)->where('student_id', $old_allocate->student_id)->get();
-                $old_blogs = $old_blogs->map(function ($i, $index) use ($requested_vars) {
-                    $i->tutor_id = $requested_vars['tutor_id'];
-                })->toArray();
-                $arranging_list = Arranging::where('tutor_id', $old_allocate->tutor_id)->where('student_id', $old_allocate->student_id)->get();
-                $arranging_list = $arranging_list->map(function ($i, $index) use ($requested_vars) {
-                    $i->tutor_id = $requested_vars['tutor_id'];
-                })->toArray();
                 //end 
                 // region update database region
                 $old_allocate->delete();
-                Blog::update($old_blogs);
-                Arranging::update($arranging_list);
-                $reallocationTutorMail = new ReallocationTutorMail($student, $tutor);
-                $reallocationStudentMail = new ReallocationMailStudent($student, $tutor);
+
+                Blog::where('tutor_id', $old_allocate->tutor_id)->where('student_id', $old_allocate->student_id)->update(['tutor_id'=> $requested_vars['tutor_id']]);
+                Arranging::where('tutor_id', $old_allocate->tutor_id)->where('student_id', $old_allocate->student_id)->update(['tutor_id'=> $requested_vars['tutor_id']]);
+
+                $student->notify(new ReallocatedStudent($student, $tutor));
+                $tutor->notify(new ReallocatedTutor($student,$tutor));
                 // endregion
-                Mail::to($student->email)->send($reallocationStudentMail);
-                Mail::to($tutor->email)->send($reallocationTutorMail);
                 DB::commit();
             } catch (\Exception $e) {
                 DB::rollBack();
