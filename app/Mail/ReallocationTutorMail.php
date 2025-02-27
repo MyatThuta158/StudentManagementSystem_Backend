@@ -17,7 +17,7 @@ class ReallocationTutorMail extends Mailable
     /**
      * Create a new message instance.
      */
-    public function __construct(private Student $student , private Tutor $tutor)
+    public function __construct(private Student $student, private Tutor $tutor)
     {
         //
     }
@@ -28,7 +28,7 @@ class ReallocationTutorMail extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            env("MAIL_FROM_ADDRESS",""),
+            env("MAIL_FROM_ADDRESS", ""),
             subject: 'Reallocation Notification',
         );
     }
@@ -41,7 +41,8 @@ class ReallocationTutorMail extends Mailable
         return new Content(
             view: 'email.reallocation_tutor',
             with: [
-                "student_name"=> $this->student->name,
+                "student_name" => $this->student->name,
+                "url" => "#"
             ]
         );
     }

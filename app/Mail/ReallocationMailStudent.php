@@ -42,7 +42,8 @@ class ReallocationMailStudent extends Mailable
         return new Content(
             view: 'email.reallocation_student',
             with: [
-                "tutor_name"=> $this->tutor->name
+                "tutor_name"=> $this->tutor->name,
+                 "url"=>"#"
             ]
         );
     }
