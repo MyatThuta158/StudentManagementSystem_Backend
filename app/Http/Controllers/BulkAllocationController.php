@@ -27,7 +27,7 @@ class BulkAllocationController extends Controller
                 return response()->json(ResponseModel::Failed(false, "", "There's contains already assigned student."));
             }
             $tmpAllocate = [
-                'allocation_date' => $requested_vars['allocation_date'] ?? Carbon::now('utc'),
+                'allocation_date' => Carbon::now('utc'),
                 'allocated_by' => auth()->user()->name,
                 'staff_id' => auth()->user()->id,
                 'tutor_id' => $requested_vars['tutor_id'],

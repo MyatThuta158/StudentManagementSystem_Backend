@@ -25,7 +25,7 @@ class BulkAllocationRequest extends FormRequest
             'student_ids'=>'required|array',
             'student.*'=>'required|integer|exists:students,id',
             'tutor_id'=> 'required|exists:tutors,id',
-            'allocation_date'=> 'required|date'
+            // 'allocation_date'=> 'date'
         ];
     }
 }
