@@ -1,3 +1,4 @@
+<head>
 <style>
     .btn {
         display: inline-block;
@@ -20,9 +21,12 @@
         color:white;
     }
 </style>
+</head>
+<body>
 <div style="margin: 1em;">
     <h1>Allocation</h1>
-    <p>You are allocated with tutor {{$tutor_name}} please check in application {{$url}}.</p>
+    <p>You are allocated with tutor {{$tutor_name}} please check in application.</p>
     <br />
     <a href={{$url}} class="btn">click Here To Watch</a>
 </div>
+</body>

@@ -1,3 +1,4 @@
+<head>
 <style>
     .btn {
         display: inline-block;
@@ -20,10 +21,12 @@
         transition: color .15s ease-in-out, background-color .15s ease-in-out, border-color .15s ease-in-out, box-shadow .15s ease-in-out;
     }
 </style>
-
+</head>
+<body>
 <div style="margin: 1em;">
     <h1>Reallocation</h1>
-    <p>You are reallocated with student {{$student_name}} please check in application {{$url}}.</p>
+    <p>You are reallocated with student {{$student_name}} please check in application.</p>
     <br />
     <a href={{$url}} class="btn">click Here To Watch</a>
 </div>
+</body>

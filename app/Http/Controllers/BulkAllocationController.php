@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\BulkAllocationRequest;
+use App\Jobs\SendEmailNotification;
 use App\Models\Allocation;
 use App\Models\Student;
 use App\Models\Tutor;
@@ -41,9 +42,11 @@ class BulkAllocationController extends Controller
                 // send notification
                 $student = Student::where("id", $i['student_id'])->first();
                 $tutor = Tutor::where("id", $i['tutor_id'])->first();
+                $student_job = new SendEmailNotification(new AllocatedStudent($student,$tutor) , $student);
+                $tutor_job = new SendEmailNotification(new AllocatedTutor($student,$tutor),$tutor);
 
-                $student->notify(new AllocatedStudent($student,$tutor));
-                $tutor->notify(new AllocatedTutor($student,$tutor));
+                dispatch($student_job);
+                dispatch($tutor_job);
                 // end send notification
             }
             Log::info("Bulk Imported Successfully");

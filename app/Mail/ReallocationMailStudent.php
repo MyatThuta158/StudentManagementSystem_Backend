@@ -43,7 +43,7 @@ class ReallocationMailStudent extends Mailable
             view: 'email.reallocation_student',
             with: [
                 "tutor_name"=> $this->tutor->name,
-                 "url"=>"#"
+                 "url"=>"http://localhost:4200"
             ]
         );
     }

@@ -43,7 +43,7 @@ class AllocateTutorMail extends Mailable
             view: 'email.allocation_tutor',
             with: [
                 "student_name"=> $this->student->name,
-                "url"=>"#"
+                "url"=>"http://localhost:4200"
             ]
         );
     }
