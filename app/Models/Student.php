@@ -12,15 +12,15 @@ class Student extends Authenticatable
     use HasFactory, Notifiable, HasApiTokens, HasRoles;
 
     protected $guard_name = 'api';
-    protected $table = 'students'; // ✅ Explicit table name
+    protected $table      = 'students';
 
-    protected $fillable = ['name', 'email', 'password', 'phone_number'];
+    protected $fillable = ['StudentID', 'name', 'email', 'password', 'phone_number'];
 
     protected $hidden = ['password', 'remember_token'];
 
     protected $casts = [
         'email_verified_at' => 'datetime',
-        'password' => 'hashed', // ✅ Laravel auto-hashes passwords
+        'password'          => 'hashed',
     ];
 
     public function allocations()
@@ -33,4 +33,3 @@ class Student extends Authenticatable
         return $this->hasMany(Comments::class, 'student_id'); // ✅ Fix reference
     }
 }
-

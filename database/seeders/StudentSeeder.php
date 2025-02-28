@@ -14,30 +14,35 @@ class StudentSeeder extends Seeder
 
         $students = [
             [
+                "StudentID"    => "STD01",
                 "name"         => "Doris Navarro",
                 "email"        => "dorisst@gmail.com",
                 "password"     => bcrypt("password"),
                 "phone_number" => "09790000000",
             ],
             [
+                "StudentID"    => "STD02",
                 "name"         => "Joanne Duke",
                 "email"        => "joannest@gmail.com",
                 "password"     => bcrypt("password"),
                 "phone_number" => "09790000004",
             ],
             [
+                "StudentID"    => "STD03",
                 "name"         => "Alden Beck",
                 "email"        => "dorissta@gmail.com",
                 "password"     => bcrypt("password"),
                 "phone_number" => "09790000003",
             ],
             [
+                "StudentID"    => "STD04",
                 "name"         => "Juanita Baird",
                 "email"        => "juanitast@gmail.com",
                 "password"     => bcrypt("password"),
                 "phone_number" => "09790000001",
             ],
             [
+                "StudentID"    => "STD05",
                 "name"         => "Wallace Cowan",
                 "email"        => "wallacest@gmail.com",
                 "password"     => bcrypt("password"),
