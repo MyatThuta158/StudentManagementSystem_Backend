@@ -24,23 +24,24 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('allocations', [AllocationController::class, 'store']);
     Route::post('bulk/allocations', [BulkAllocationController::class, 'allocate']);
 
-
     //allocation end
 
     // show non-allocated student
     Route::get('student/nonallocate', [BulkAllocationController::class, 'nonAllocatedStudentList']);
     // end non-allocated student
 
-    //Blog Routes start
+                                                                                           //Blog Routes start
     Route::get('/blogs/{id}', [App\Http\Controllers\BlogController::class, 'show']);       //---Show single blog---//
     Route::post('/blogs', [App\Http\Controllers\BlogController::class, 'store']);          ///--Blog Create---//
     Route::post('/blogs/{id}', [App\Http\Controllers\BlogController::class, 'update']);    //----Blog update---//
     Route::delete('/blogs/{id}', [App\Http\Controllers\BlogController::class, 'destroy']); ///----Blog delete---//
-    //////End of blog routes//////
+                                                                                           //////End of blog routes//////
 
     //------This is for student's search, views routes------//
     Route::get('/students/lists', [App\Http\Controllers\StudentController::class, 'index']);
     Route::get('/students/search', [App\Http\Controllers\StudentController::class, 'search']);
+    Route::get('/students/namesort', [App\Http\Controllers\StudentController::class, 'sortStudents']);
+    Route::get('/students/idsort', [App\Http\Controllers\StudentController::class, 'sortId']);
 });
 
 Route::middleware('auth:sanctum')->group(function () {
@@ -55,4 +56,3 @@ Route::middleware('auth:sanctum')->group(function () {
     // tutorlist
     Route::get('/tutors', [TutorController::class, 'tutorList']);
 });
-
