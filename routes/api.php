@@ -38,7 +38,7 @@ Route::middleware('auth:sanctum')->group(function () {
                                                                                            //////End of blog routes//////
 
     //------This is for student's search, views routes------//
-    Route::get('/students/lists', [App\Http\Controllers\StudentController::class, 'index']);
+    Route::get('/students/unallocationlists', [App\Http\Controllers\StudentController::class, 'index']);
     Route::get('/students/search', [App\Http\Controllers\StudentController::class, 'search']);
     Route::get('/students/namesort', [App\Http\Controllers\StudentController::class, 'sortStudents']);
     Route::get('/students/idsort', [App\Http\Controllers\StudentController::class, 'sortId']);
