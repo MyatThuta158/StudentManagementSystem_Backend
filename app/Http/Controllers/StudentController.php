@@ -27,4 +27,38 @@ class StudentController extends Controller
 
         return response()->json($students);
     }
+
+    //----------this is to make ascending and descending order based on student name---//
+    public function sortStudents(Request $request)
+    {
+        // Get the sort direction from the request (default to 'asc')
+        $sortDirection = $request->input('sort', 'asc');
+
+        // Validate the sort direction to ensure it is either 'asc' or 'desc'
+        if (! in_array($sortDirection, ['asc', 'desc'])) {
+            return response()->json(['error' => 'Invalid sort direction. Use "asc" or "desc".'], 400);
+        }
+
+        // Fetch students sorted by name in the specified direction
+        $students = Student::orderBy('name', $sortDirection)->get();
+
+        return response()->json($students);
+    }
+
+    //----------this is to make ascending and descending order based on student id---//
+    public function sortId(Request $request)
+    {
+        // Get the sort direction from the request (default to 'asc')
+        $sortDirection = $request->input('sort', 'asc');
+
+        // Validate the sort direction to ensure it is either 'asc' or 'desc'
+        if (! in_array($sortDirection, ['asc', 'desc'])) {
+            return response()->json(['error' => 'Invalid sort direction. Use "asc" or "desc".'], 400);
+        }
+
+        // Fetch students sorted by name in the specified direction
+        $students = Student::orderBy('StudentID', $sortDirection)->get();
+
+        return response()->json($students);
+    }
 }
