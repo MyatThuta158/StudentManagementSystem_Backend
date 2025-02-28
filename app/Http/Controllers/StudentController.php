@@ -20,47 +20,54 @@ class StudentController extends Controller
 
     public function search(Request $request)
     {
-
         $searchTerm = $request->input('query');
 
-        $students = Student::where('name', 'LIKE', '%' . $searchTerm . '%')
-            ->orWhere('email', 'LIKE', '%' . $searchTerm . '%')
+        $students = Student::where(function ($query) use ($searchTerm) {
+            $query->where('name', 'LIKE', '%' . $searchTerm . '%')
+                ->orWhere('email', 'LIKE', '%' . $searchTerm . '%');
+        })
+            ->whereNotIn('id', function ($query) {
+                $query->select('student_id')->from('allocations');
+            })
             ->get();
+
+        if ($students->isEmpty()) {
+            return response()->json(['message' => 'Not Found'], 404);
+        }
 
         return response()->json($students);
     }
 
     //----------this is to make ascending and descending order based on student name---//
-    public function sortStudents(Request $request)
-    {
-        // Get the sort direction from the request (default to 'asc')
-        $sortDirection = $request->input('sort', 'asc');
+    // public function sortStudents(Request $request)
+    // {
+    //     $sortDirection = $request->input('sort', 'asc');
 
-        // Validate the sort direction to ensure it is either 'asc' or 'desc'
-        if (! in_array($sortDirection, ['asc', 'desc'])) {
-            return response()->json(['error' => 'Invalid sort direction. Use "asc" or "desc".'], 400);
-        }
+    //     if (! in_array($sortDirection, ['asc', 'desc'])) {
+    //         return response()->json(['error' => 'Invalid sort direction. Use "asc" or "desc".'], 400);
+    //     }
 
-        // Fetch students sorted by name in the specified direction
-        $students = Student::orderBy('name', $sortDirection)->get();
+    //     $students = Student::doesntHave('allocation')
+    //         ->orderBy('name', $sortDirection)
+    //         ->get();
 
-        return response()->json($students);
-    }
+    //     return response()->json($students);
+    // }
 
-    //----------this is to make ascending and descending order based on student id---//
-    public function sortId(Request $request)
-    {
-        // Get the sort direction from the request (default to 'asc')
-        $sortDirection = $request->input('sort', 'asc');
+    // //----------this is to make ascending and descending order based on student id---//
+    // public function sortId(Request $request)
+    // {
+    //     // Get the sort direction from the request (default to 'asc')
+    //     $sortDirection = $request->input('sort', 'asc');
 
-        // Validate the sort direction to ensure it is either 'asc' or 'desc'
-        if (! in_array($sortDirection, ['asc', 'desc'])) {
-            return response()->json(['error' => 'Invalid sort direction. Use "asc" or "desc".'], 400);
-        }
+    //     // Validate the sort direction to ensure it is either 'asc' or 'desc'
+    //     if (! in_array($sortDirection, ['asc', 'desc'])) {
+    //         return response()->json(['error' => 'Invalid sort direction. Use "asc" or "desc".'], 400);
+    //     }
 
-        // Fetch students sorted by name in the specified direction
-        $students = Student::orderBy('StudentID', $sortDirection)->get();
+    //     // Fetch students sorted by name in the specified direction
+    //     $students = Student::orderBy('StudentID', $sortDirection)->get();
 
-        return response()->json($students);
-    }
+    //     return response()->json($students);
+    // }
 }
