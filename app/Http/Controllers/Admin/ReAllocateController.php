@@ -51,7 +51,7 @@ class ReAllocateController
                 "staff_id" => $staff_id, // this should get from webapplication.
                 "allocation_date" => $requested_vars['allocation_date'],
                 "allocated_by" => $staff_name ,// this should get from staff table,
-                "reason"=> array_key_exists("reason",$requested_vars) ? $requested_vars['reason'] : null
+                "reason"=> array_key_exists("reason",$requested_vars->toArray()) ? $requested_vars['reason'] : null
             ];
             DB::beginTransaction();
             try {
