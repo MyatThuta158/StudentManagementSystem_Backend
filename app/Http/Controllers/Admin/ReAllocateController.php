@@ -2,6 +2,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Requests\ReallocateRequest;
+use App\Jobs\SendEmailNotification;
 use App\Mail\ReallocationTutorMail;
 use App\Mail\ReallocationMailStudent;
 use App\Models\Allocation;
@@ -64,8 +65,11 @@ class ReAllocateController
                 Blog::where('tutor_id', $old_allocate->tutor_id)->where('student_id', $old_allocate->student_id)->update(['tutor_id'=> $requested_vars['tutor_id']]);
                 Arranging::where('tutor_id', $old_allocate->tutor_id)->where('student_id', $old_allocate->student_id)->update(['tutor_id'=> $requested_vars['tutor_id']]);
 
-                $student->notify(new ReallocatedStudent($student, $tutor));
-                $tutor->notify(new ReallocatedTutor($student,$tutor));
+                $student_job = new SendEmailNotification(new ReallocatedStudent($student,$tutor) , $student);
+                $tutor_job = new SendEmailNotification(new ReallocatedTutor($student,$tutor),$tutor);
+
+                dispatch($student_job);
+                dispatch($tutor_job);
                 // endregion
                 DB::commit();
             } catch (\Exception $e) {
