@@ -22,19 +22,14 @@ return new class extends Migration
             $table->timestampTz('arrange_date');
             $table->boolean("approved");
             $table->string("topic");
-            $table->enum("meeting_type", ['online', "offline"]);
+
+            $table->enum("meeting_type",['online',"offline"]);
             $table->string("location")->nullable();
-            $table->string("reject_reason")->nullable();
-
-
+            $table->string("rejcet_reason")->nullable();
             $table->unsignedBigInteger("approved_arrange_id")->nullable();
-            $table->foreign("approved_arrange_id")
-                ->references('id')->on('arrangings')
-                ->onDelete('cascade');
-
-
+            $table->foreign("approved_arrange_id")->references('id')->on('arrangings')->cascadeOnDelete();
             $table->timestampTz("approved_reject_date")->nullable();
-            $table->enum("status", ["pending", "approved", "rejected"])->default("pending");
+            $table->enum("status",["pending","approved","rejcet"])->default("pending");
 
             $table->timestampsTz();
         });
