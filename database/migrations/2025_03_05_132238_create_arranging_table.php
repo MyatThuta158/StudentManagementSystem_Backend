@@ -18,7 +18,7 @@ return new class extends Migration
             $table->foreign("tutor_id")->references("id")->on("tutors")->onDelete('cascade');
             $table->foreign("student_id")->references("id")->on("students")->onDelete('cascade');
             $table->enum("status",["pending","completed","canceled"]);
-            $table->timestamps();
+            $table->timestampsTz();
         });
     }
 
@@ -27,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('arranging');
+        Schema::dropIfExists('arrangings');
     }
 };
