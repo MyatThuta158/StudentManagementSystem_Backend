@@ -7,6 +7,7 @@ use App\Http\Controllers\CommentController;
 use App\Http\Controllers\TutorController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\ArrangingController;
 
 Route::get('/user', function (Request $request) {
     return $request->user();
@@ -24,7 +25,6 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('allocations', [AllocationController::class, 'store']);
     Route::post('bulk/allocations', [BulkAllocationController::class, 'allocate']);
 
-
     //allocation end
 
     // show non-allocated student
@@ -39,8 +39,10 @@ Route::middleware('auth:sanctum')->group(function () {
     //////End of blog routes//////
 
     //------This is for student's search, views routes------//
-    Route::get('/students/lists', [App\Http\Controllers\StudentController::class, 'index']);
+    Route::get('/students/unallocationlists', [App\Http\Controllers\StudentController::class, 'index']);
     Route::get('/students/search', [App\Http\Controllers\StudentController::class, 'search']);
+    Route::get('/students/namesort', [App\Http\Controllers\StudentController::class, 'sortStudents']);
+    Route::get('/students/idsort', [App\Http\Controllers\StudentController::class, 'sortId']);
 });
 
 Route::middleware('auth:sanctum')->group(function () {
@@ -56,3 +58,11 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/tutors', [TutorController::class, 'tutorList']);
 });
 
+// Arranging Routes (Students Only)
+Route::middleware('auth:sanctum')->group(function () {
+    Route::post('/arranging', [ArrangingController::class, 'store']); // ✅ Only students can create arrangements
+    Route::get('/arranging', [ArrangingController::class, 'index']);  // ✅ Students & Tutors can view
+    Route::get('/arranging/{id}', [ArrangingController::class, 'show']); // ✅ Fetch arrangement details
+    Route::put('/arranging/{id}', [ArrangingController::class, 'update']); // ✅ Update arrangement status
+    Route::delete('/arranging/{id}', [ArrangingController::class, 'destroy']); // ✅ Allow cancellation
+});

@@ -49,7 +49,7 @@ class CommentController extends Controller
             'blog_id' => 'required|exists:blogs,id',
         ]);
 
-        // Allow users to comment multiple times (REMOVED the previous restriction)
+        // Allow users to comment multiple times
         $commentData = [
             'content' => $request->content,
             'blog_id' => $request->blog_id,
