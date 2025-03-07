@@ -15,10 +15,19 @@ class CommentController extends Controller
     public function index(Request $request)
     {
         $perPage = $request->query('per_page', 10); // Default: 10 comments per page
-        $comments = Comments::with(['blog', 'tutor', 'student'])->paginate($perPage);
+
+        // Check if `blog_id` is provided
+        if (!$request->has('blog_id')) {
+            return response()->json(['error' => 'Blog ID is required.'], 400);
+        }
+
+        $comments = Comments::where('blog_id', $request->blog_id)
+            ->with(['tutor', 'student'])
+            ->paginate($perPage);
 
         return response()->json($comments, 200);
     }
+
 
     /**
      * Store a newly created comment.
@@ -30,8 +39,6 @@ class CommentController extends Controller
         // Detect the authenticated user
         $user = Auth::guard('sanctum')->user();
 
-        Log::info("Authenticated User", ['user' => $user]);
-
         if (!$user) {
             return response()->json(['error' => 'Unauthorized. Please log in as a tutor or student.'], 401);
         }
@@ -42,18 +49,7 @@ class CommentController extends Controller
             'blog_id' => 'required|exists:blogs,id',
         ]);
 
-        // OPTIONAL: Restrict users to **only one comment per blog**
-        $existingComment = Comments::where('blog_id', $request->blog_id)
-            ->where(function ($query) use ($user) {
-                $query->where('tutor_id', $user->id)->orWhere('student_id', $user->id);
-            })
-            ->first();
-
-        if ($existingComment) {
-            return response()->json(['error' => 'You have already commented on this blog.'], 403);
-        }
-
-        // Determine if the user is a tutor or student
+        // Allow users to comment multiple times
         $commentData = [
             'content' => $request->content,
             'blog_id' => $request->blog_id,
@@ -118,8 +114,6 @@ class CommentController extends Controller
 
         return response()->json(['error' => 'Unauthorized. You can only update your own comments.'], 403);
     }
-
-
 
 
     /**

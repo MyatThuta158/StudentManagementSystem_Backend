@@ -9,7 +9,7 @@ class StudentSeeder extends Seeder
 {
     public function run(): void
     {
-
+        // Truncate table before seeding to avoid duplicates
         Student::truncate();
 
         $students = [
@@ -17,7 +17,7 @@ class StudentSeeder extends Seeder
                 "StudentID"    => "STD01",
                 "name"         => "Doris Navarro",
                 "email"        => "dorisst@gmail.com",
-                "password"     => bcrypt("password"),
+                "password"     => bcrypt("password"), // Hash passwords
                 "phone_number" => "09790000000",
             ],
             [
@@ -51,13 +51,15 @@ class StudentSeeder extends Seeder
         ];
 
         foreach ($students as $studentData) {
-
             $studentData['created_at'] = Carbon::now('UTC');
             $studentData['updated_at'] = Carbon::now('UTC');
 
             $student = Student::create($studentData);
-            // Assign the "student" role
-            $student->assignRole('student');
+
+            // Assign the "student" role (optional, only if using Spatie roles)
+            if (method_exists($student, 'assignRole')) {
+                $student->assignRole('student');
+            }
         }
     }
 }

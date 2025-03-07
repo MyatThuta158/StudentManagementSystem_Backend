@@ -13,12 +13,11 @@ return new class extends Migration
     {
         Schema::create('arrangings', function (Blueprint $table) {
             $table->id();
-            $table->dateTimeTz("arrange_date");
-            $table->unsignedBigInteger("student_id")->nullable();
-            $table->unsignedBigInteger("tutor_id")->nullable();
-            $table->enum("type",["meeting","assignments"]);
-            $table->foreign("tutor_id")->on("tutors")->references("id")->onDelete("cascade");
-            $table->foreign("student_id")->on("students")->references("id")->onDelete("cascade");
+            $table->unsignedBigInteger("student_id");
+            $table->unsignedBigInteger("tutor_id");
+            $table->foreign("tutor_id")->references("id")->on("tutors")->onDelete('cascade');
+            $table->foreign("student_id")->references("id")->on("students")->onDelete('cascade');
+            $table->enum("status",["pending","completed","canceled"]);
             $table->timestampsTz();
         });
     }

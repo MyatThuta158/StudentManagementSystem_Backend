@@ -13,13 +13,16 @@ return new class extends Migration
     {
         Schema::create('meeting_records', function (Blueprint $table) {
             $table->id();
+            $table->string('meeting_note');
             $table->unsignedBigInteger("arrange_id");
-            $table->foreign("arrange_id")->on("arrangings")->references("id")->onDelete("cascade");
-            $table->string("meeting_notes");
-            $table->dateTimeTz("meeting_date");
-            $table->string("meeting_type");
+            $table->foreign("arrange_id")
+                ->references('id')->on('arrangings')
+                ->onDelete('cascade');
+
+
             $table->string("uploaded_document");
-            $table->timestampsTz();
+            $table->softDeletesTz();
+            $table->timestamps();
         });
     }
 
