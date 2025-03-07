@@ -2,12 +2,12 @@
 
 use App\Http\Controllers\Admin\ReAllocateController;
 use App\Http\Controllers\AllocationController;
+use App\Http\Controllers\ArrangingController;
 use App\Http\Controllers\BulkAllocationController;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\TutorController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\ArrangingController;
 
 Route::get('/user', function (Request $request) {
     return $request->user();
@@ -31,12 +31,12 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('student/nonallocate', [BulkAllocationController::class, 'nonAllocatedStudentList']);
     // end non-allocated student
 
-    //Blog Routes start
+                                                                                           //Blog Routes start
     Route::get('/blogs/{id}', [App\Http\Controllers\BlogController::class, 'show']);       //---Show single blog---//
     Route::post('/blogs', [App\Http\Controllers\BlogController::class, 'store']);          ///--Blog Create---//
     Route::post('/blogs/{id}', [App\Http\Controllers\BlogController::class, 'update']);    //----Blog update---//
     Route::delete('/blogs/{id}', [App\Http\Controllers\BlogController::class, 'destroy']); ///----Blog delete---//
-    //////End of blog routes//////
+                                                                                           //////End of blog routes//////
 
     //------This is for student's search, views routes------//
     Route::get('/students/unallocationlists', [App\Http\Controllers\StudentController::class, 'index']);
@@ -60,9 +60,9 @@ Route::middleware('auth:sanctum')->group(function () {
 
 // Arranging Routes (Students Only)
 Route::middleware('auth:sanctum')->group(function () {
-    Route::post('/arranging', [ArrangingController::class, 'store']); // ✅ Only students can create arrangements
-    Route::get('/arranging', [ArrangingController::class, 'index']);  // ✅ Students & Tutors can view
-    Route::get('/arranging/{id}', [ArrangingController::class, 'show']); // ✅ Fetch arrangement details
-    Route::put('/arranging/{id}', [ArrangingController::class, 'update']); // ✅ Update arrangement status
+    Route::post('/arranging', [ArrangingController::class, 'store']);          // ✅ Only students can create arrangements
+    Route::get('/arranging', [ArrangingController::class, 'index']);           // ✅ Students & Tutors can view
+    Route::get('/arranging/{id}', [ArrangingController::class, 'show']);       // ✅ Fetch arrangement details
+    Route::put('/arranging/{id}', [ArrangingController::class, 'update']);     // ✅ Update arrangement status
     Route::delete('/arranging/{id}', [ArrangingController::class, 'destroy']); // ✅ Allow cancellation
 });
