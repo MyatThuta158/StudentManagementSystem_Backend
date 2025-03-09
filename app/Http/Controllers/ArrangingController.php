@@ -14,7 +14,7 @@ class ArrangingController extends Controller
         $perPage = $request->query('per_page', 10); // Default to 10 per page, customizable
         $arrangings = Arranging::with(['student', 'tutor'])->paginate($perPage);
 
-        return response()->json($arrangings, 200);
+        return response()->json(["data" => $arrangings ], 200);
     }
 
 
