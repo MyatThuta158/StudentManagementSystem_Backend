@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Admin\ReAllocateController;
 use App\Http\Controllers\AllocationController;
+use App\Http\Controllers\ArrangingController;
 use App\Http\Controllers\BulkAllocationController;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\TutorController;
@@ -55,4 +56,13 @@ Route::middleware('auth:sanctum')->group(function () {
 Route::middleware('auth:sanctum')->group(function () {
     // tutorlist
     Route::get('/tutors', [TutorController::class, 'tutorList']);
+});
+
+// Arranging Routes (Students Only)
+Route::middleware('auth:sanctum')->group(function () {
+    Route::post('/arranging', [ArrangingController::class, 'store']);          // ✅ Only students can create arrangements
+    Route::get('/arranging', [ArrangingController::class, 'index']);           // ✅ Students & Tutors can view
+    Route::get('/arranging/{id}', [ArrangingController::class, 'show']);       // ✅ Fetch arrangement details
+    Route::put('/arranging/{id}', [ArrangingController::class, 'update']);     // ✅ Update arrangement status
+    Route::delete('/arranging/{id}', [ArrangingController::class, 'destroy']); // ✅ Allow cancellation
 });

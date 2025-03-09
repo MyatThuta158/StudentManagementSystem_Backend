@@ -31,13 +31,13 @@ class AllocationController extends Controller
             return response()->json(['error' => 'Unauthorized. Please login as staff.'], 401);
         }
 
-        // ✅ Check if the student is already allocated to a tutor
+
         $existingAllocation = Allocation::where('student_id', $request->student_id)->first();
         if ($existingAllocation) {
             return response()->json(['error' => 'This student is already allocated to a tutor.'], 409);
         }
 
-        // ✅ Proceed with creating the allocation if the student is not allocated
+
         $allocation = Allocation::create([
             'allocation_date' => $request->allocation_date,
             'allocated_by' => $staff->name,
@@ -61,7 +61,7 @@ class AllocationController extends Controller
     public function index(Request $request)
     {
         $perPage = $request->query('per_page', 10); // Default 10 per page
-        $allocations = Allocation::with(['staff', 'tutor', 'student'])->paginate($perPage);
+        $allocations = Allocation::with(['staff', 'tutor', 'student'])->orderByDesc('created_at')->paginate($perPage);
 
         return response()->json($allocations, 200);
     }
