@@ -5,13 +5,22 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Arranging extends Model
+class MeetingRequest extends Model
 {
     use HasFactory;
 
     protected $fillable = [
         'student_id',
         'tutor_id',
+        'reason',
+        'arrange_date',
+        'approved',
+        'topic',
+        'meeting_type',
+        'location',
+        'reject_reason',
+        'approved_arrange_id',
+        'approved_reject_date',
         'status'
     ];
 
@@ -26,13 +35,8 @@ class Arranging extends Model
         return $this->belongsTo(Tutor::class);
     }
 
-    public function meetingDetails()
+    public function approvedArrangement()
     {
-        return $this->hasMany(MeetingDetail::class, 'arrange_id');
-    }
-
-    public function meetingRecords()
-    {
-        return $this->hasMany(MeetingRecord::class, 'arrange_id');
+        return $this->belongsTo(Arranging::class, 'approved_arrange_id');
     }
 }

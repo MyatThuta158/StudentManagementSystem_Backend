@@ -15,7 +15,11 @@ return new class extends Migration
             $table->id();
             $table->string('meeting_note');
             $table->unsignedBigInteger("arrange_id");
-            $table->foreign("arrange_id")->references('id')->on('arrangings')->cascadeOnDelete();
+            $table->foreign("arrange_id")
+                ->references('id')->on('arrangings')
+                ->onDelete('cascade');
+
+
             $table->string("uploaded_document");
             $table->softDeletesTz();
             $table->timestamps();
