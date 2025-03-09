@@ -12,9 +12,9 @@ class Staff extends Authenticatable
     use HasFactory, Notifiable, HasApiTokens, HasRoles;
 
     protected $guard_name = 'api';
-    protected $table = 'staffs'; // ✅ Explicit table name
+    protected $table      = 'staffs';
 
-    protected $fillable = ['name', 'email', 'password', 'phone_number'];
+    protected $fillable = ['name', 'email', 'password', 'phone_number', 'last_login_at'];
 
     protected $hidden = ['password', 'remember_token'];
 
@@ -22,5 +22,9 @@ class Staff extends Authenticatable
     {
         return $this->hasMany(Allocation::class, 'staff_id');
     }
-}
 
+    public function loginLogs()
+    {
+        return $this->morphMany(\App\Models\LoginLog::class, 'userable');
+    }
+}

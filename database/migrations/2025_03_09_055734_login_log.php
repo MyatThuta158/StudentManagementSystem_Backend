@@ -11,15 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('staffs', function (Blueprint $table) {
+        Schema::create('login_logs', function (Blueprint $table) {
             $table->id();
-            $table->string("name", 255);
-            $table->string("email")->unique();
-            $table->string("password");
-            $table->string("phone_number");
-            $table->timestamp("last_login_at")->nullable();
-            $table->timestampsTz();
+            $table->morphs('userable'); // This creates userable_id and userable_type fields.
+            $table->string('browser')->nullable();
+            $table->string('ip_address')->nullable();
+            $table->timestamps();
         });
+
     }
 
     /**
@@ -27,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('staffs');
+        Schema::dropIfExists('login_logs');
     }
 };

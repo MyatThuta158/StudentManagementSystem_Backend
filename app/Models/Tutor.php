@@ -12,15 +12,15 @@ class Tutor extends Authenticatable
     use HasFactory, Notifiable, HasApiTokens, HasRoles;
 
     protected $guard_name = 'api';
-    protected $table = 'tutors';
+    protected $table      = 'tutors';
 
-    protected $fillable = ['name', 'email', 'password', 'phone_number', 'specialization'];
+    protected $fillable = ['name', 'email', 'password', 'phone_number', 'specialization', 'last_login_at'];
 
     protected $hidden = ['password', 'remember_token'];
 
     protected $casts = [
         'email_verified_at' => 'datetime',
-        'password' => 'hashed',
+        'password'          => 'hashed',
     ];
 
     public function allocations()
@@ -32,5 +32,9 @@ class Tutor extends Authenticatable
     {
         return $this->hasMany(Comments::class, 'tutor_id');
     }
-}
 
+    public function loginLogs()
+    {
+        return $this->morphMany(\App\Models\LoginLog::class, 'userable');
+    }
+}

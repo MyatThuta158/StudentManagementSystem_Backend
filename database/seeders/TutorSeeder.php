@@ -3,6 +3,7 @@ namespace Database\Seeders;
 
 use App\Models\Tutor;
 use Carbon\Carbon;
+use Faker\Factory as Faker;
 use Illuminate\Database\Seeder;
 
 class TutorSeeder extends Seeder
@@ -12,51 +13,31 @@ class TutorSeeder extends Seeder
      */
     public function run(): void
     {
-
+        // Truncate table before seeding to avoid duplicates
         Tutor::truncate();
 
-        $tutors = [
-            [
-                "name"           => "Doris Navarro1",
-                "email"          => "doristt1@gmail.com",
-                "password"       => bcrypt("password"),
-                "phone_number"   => "09790000000",
-                "specialization" => "Mathematics",
-            ],
-            [
-                "name"           => "Joanne Duke1",
-                "email"          => "joannett1@gmail.com",
-                "password"       => bcrypt("password"),
-                "phone_number"   => "09790000004",
-                "specialization" => "English",
-            ],
-            [
-                "name"           => "Alden Beck1",
-                "email"          => "doristta1@gmail.com",
-                "password"       => bcrypt("password"),
-                "phone_number"   => "09790000003",
-                "specialization" => "English",
-            ],
-            [
-                "name"           => "Juanita Baird1",
-                "email"          => "juanitatt1@gmail.com",
-                "password"       => bcrypt("password"),
-                "phone_number"   => "09790000001",
-                "specialization" => "English",
-            ],
-            [
-                "name"           => "Wallace Cowan1",
-                "email"          => "wallacett1@gmail.com",
-                "password"       => bcrypt("password"),
-                "phone_number"   => "09790000002",
-                "specialization" => "English",
-            ],
+        $faker = Faker::create();
+
+        // Define a list of possible specializations
+        $specializations = [
+            'Mathematics',
+            'English',
+            'Science',
+            'History',
+            'Computer Science',
         ];
 
-        foreach ($tutors as $tutorData) {
-
-            $tutorData['created_at'] = Carbon::now('UTC');
-            $tutorData['updated_at'] = Carbon::now('UTC');
+        // Change the count as needed
+        for ($i = 1; $i <= 40; $i++) {
+            $tutorData = [
+                "name"           => $faker->name,
+                "email"          => $faker->unique()->safeEmail,
+                "password"       => bcrypt("password"), // Always hashed using bcrypt
+                "phone_number"   => $faker->numerify('097900#####'),
+                "specialization" => $faker->randomElement($specializations),
+                "created_at"     => Carbon::now('UTC'),
+                "updated_at"     => Carbon::now('UTC'),
+            ];
 
             $tutor = Tutor::create($tutorData);
             // Assign the "tutor" role
