@@ -15,7 +15,7 @@ class StudentController extends Controller
         });
 
         // dd($students);
-        return response()->json($students);
+        return response()->json([ "data"=>$students]);
     }
 
     public function search(Request $request)
