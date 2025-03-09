@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string("password");
             $table->string('phone_number');
             $table->string('specialization');
+            $table->timestamp("last_login_at")->nullable();
             $table->timestampsTz();
         });
     }

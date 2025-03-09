@@ -17,11 +17,11 @@ class StudentSeeder extends Seeder
 
         for ($i = 1; $i <= 100; $i++) {
             $studentData = [
-                "StudentID"    => sprintf("STD%03d", $i), // e.g. STD001, STD002, ...
+                "StudentID"    => sprintf("STD%03d", $i), 
                 "name"         => $faker->name,
                 "email"        => $faker->unique()->safeEmail,
-                "password"     => bcrypt("password"),              // Hash password using bcrypt
-                "phone_number" => $faker->numerify('097900#####'), // Generates a fake phone number
+                "password"     => bcrypt("password"),              
+                "phone_number" => $faker->numerify('097900#####'), 
                 "created_at"   => Carbon::now('UTC'),
                 "updated_at"   => Carbon::now('UTC'),
             ];
