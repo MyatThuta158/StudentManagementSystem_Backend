@@ -31,6 +31,8 @@ class StudentDashboardController extends Controller
             ->where('author_role', 'tutor')
             ->count();
 
+        $totalBlog = $studentVlogs + $tutorVlogs;
+
         // Count online meetings for this student.
         $onlineMeetingsCount = MeetingDetail::with('arranging')
             ->where('meeting_type', 'online')
@@ -47,21 +49,26 @@ class StudentDashboardController extends Controller
             })
             ->count();
 
+        $totalMeeting = $onlineMeetingsCount + $campusMeetingsCount;
+
         // Build and return the JSON response.
         return response()->json([
-            'user'     => [
+            'status' => 200,
+            'data'   => ['user' => [
                 'name'          => $userInfo['name'],
                 'email'         => $userInfo['email'],
                 'last_login_at' => $userInfo['last_login_at'],
             ],
-            'vlogs'    => [
-                'student' => $studentVlogs,
-                'tutor'   => $tutorVlogs,
-            ],
-            'meetings' => [
-                'count_online' => $onlineMeetingsCount,
-                'count_campus' => $campusMeetingsCount,
-            ],
+                'vlogs'             => [
+                    'student'   => $studentVlogs,
+                    'tutor'     => $tutorVlogs,
+                    'totalBlog' => $totalBlog,
+                ],
+                'meetings'          => [
+                    'count_online' => $onlineMeetingsCount,
+                    'count_campus' => $campusMeetingsCount,
+                    'totalMeeting' => $totalMeeting,
+                ]],
         ]);
     }
 }
