@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -10,6 +9,7 @@ class MeetingDetail extends Model
 {
     use HasFactory, SoftDeletes;
 
+    protected $table    = 'meeting_detail';
     protected $fillable = [
         'arrange_date',
         'meeting_type',
@@ -18,7 +18,7 @@ class MeetingDetail extends Model
         'online_meeting_application_type',
         'arrange_id',
         'topic',
-        'status'
+        'status',
     ];
 
     // Relationships
