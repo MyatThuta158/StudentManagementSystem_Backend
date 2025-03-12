@@ -14,7 +14,7 @@ class Student extends Authenticatable
     protected $guard_name = 'api';
     protected $table      = 'students';
 
-    protected $fillable = ['StudentID', 'name', 'email', 'password', 'phone_number'];
+    protected $fillable = ['StudentID', 'name', 'email', 'password', 'phone_number', 'last_login_at'];
 
     protected $hidden = ['password', 'remember_token'];
 
@@ -30,6 +30,11 @@ class Student extends Authenticatable
 
     public function comments()
     {
-        return $this->hasMany(Comments::class, 'student_id'); // ✅ Fix reference
+        return $this->hasMany(Comments::class, 'student_id');
+    }
+
+    public function loginLogs()
+    {
+        return $this->morphMany(\App\Models\LoginLog::class, 'userable');
     }
 }
