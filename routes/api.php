@@ -60,9 +60,9 @@ Route::middleware('auth:sanctum')->group(function () {
 
 // Arranging Routes (Students Only)
 Route::middleware('auth:sanctum')->group(function () {
-    Route::post('/arranging', [ArrangingController::class, 'store']);          // ✅ Only students can create arrangements
-    Route::get('/arranging', [ArrangingController::class, 'index']);           // ✅ Students & Tutors can view
-    Route::get('/arranging/{id}', [ArrangingController::class, 'show']);       // ✅ Fetch arrangement details
-    Route::put('/arranging/{id}', [ArrangingController::class, 'update']);     // ✅ Update arrangement status
-    Route::delete('/arranging/{id}', [ArrangingController::class, 'destroy']); // ✅ Allow cancellation
+    Route::post('/arranging', [ArrangingController::class, 'store']);          //  Only students can create arrangements
+    Route::get('/arranging', [ArrangingController::class, 'index']);           //  Students & Tutors can view
+    Route::get('/arranging/{id}', [ArrangingController::class, 'show']);       //  Fetch arrangement details
+    Route::put('/arranging/{id}', [ArrangingController::class, 'update']);     //  Update arrangement status
+    Route::delete('/arranging/{id}', [ArrangingController::class, 'destroy']); //  Allow cancellation
 });
