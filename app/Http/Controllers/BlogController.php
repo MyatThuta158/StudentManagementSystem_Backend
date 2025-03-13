@@ -39,6 +39,7 @@ class BlogController extends Controller
                 // Validate file if provided
                 'DocumentFile' => 'nullable|file|mimes:pdf,doc,docx,txt',
             ]);
+
         } catch (ValidationException $e) {
             return response()->json([
                 'errors'  => $e->errors(),
@@ -50,6 +51,7 @@ class BlogController extends Controller
         if ($user->hasRole('student')) {
             // Find the allocation where the student is the current user.
             $allocation = Allocation::where('student_id', $user->id)->first();
+            // dd($allocation);
             if (! $allocation) {
                 return response()->json(['error' => 'No allocation found for this student'], 404);
             }
@@ -58,6 +60,8 @@ class BlogController extends Controller
             $validatedData['tutor_id']    = $allocation->tutor_id;
             $validatedData['author']      = $user->name;
             $validatedData['author_role'] = 'student';
+
+            //dd($validatedData);
         } elseif ($user->hasRole('tutor')) {
             // Find the allocation where the tutor is the current user.
             $allocation = Allocation::where('tutor_id', $user->id)->first();
@@ -74,12 +78,12 @@ class BlogController extends Controller
         }
 
         // Handle document upload if a file is provided
-        if ($request->hasFile('DocumentFile')) {
-            $path                          = $request->file('DocumentFile')->store('documents', 'public');
-            $validatedData['DocumentFile'] = $path;
-        } else {
-            $validatedData['DocumentFile'] = null;
-        }
+        // if ($request->hasFile('DocumentFile')) {
+        //     $path                          = $request->file('DocumentFile')->store('documents', 'public');
+        //     $validatedData['DocumentFile'] = $path;
+        // } else {
+        //     $validatedData['DocumentFile'] = null;
+        // }
 
         // Create the blog record
         $blog = Blog::create($validatedData);
@@ -158,13 +162,13 @@ class BlogController extends Controller
         }
 
         // Handle document update: delete the old file if a new document is provided
-        if ($request->hasFile('DocumentFile')) {
-            if ($blog->DocumentFile) {
-                Storage::disk('public')->delete($blog->DocumentFile);
-            }
-            $path                          = $request->file('DocumentFile')->store('documents', 'public');
-            $validatedData['DocumentFile'] = $path;
-        }
+        // if ($request->hasFile('DocumentFile')) {
+        //     if ($blog->DocumentFile) {
+        //         Storage::disk('public')->delete($blog->DocumentFile);
+        //     }
+        //     $path                          = $request->file('DocumentFile')->store('documents', 'public');
+        //     $validatedData['DocumentFile'] = $path;
+        // }
 
         // Update the blog record with the merged data
         $blog->update($validatedData);
@@ -191,9 +195,9 @@ class BlogController extends Controller
         }
 
         // Delete the document from storage if it exists
-        if ($blog->DocumentFile) {
-            Storage::disk('public')->delete($blog->DocumentFile);
-        }
+        // if ($blog->DocumentFile) {
+        //     Storage::disk('public')->delete($blog->DocumentFile);
+        // }
 
         // Delete the blog record
         $blog->delete();
