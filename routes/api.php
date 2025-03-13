@@ -1,14 +1,17 @@
 <?php
 
-use App\Http\Controllers\Admin\ReAllocateController;
-use App\Http\Controllers\AllocationController;
-use App\Http\Controllers\ArrangingController;
-use App\Http\Controllers\BulkAllocationController;
-use App\Http\Controllers\CommentController;
+
+
 use App\Http\Controllers\StudentDashboardController;
-use App\Http\Controllers\TutorController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\TutorController;
+use App\Http\Controllers\CommentController;
+use App\Http\Controllers\ArrangingController;
+use App\Http\Controllers\AllocationController;
+use App\Http\Controllers\BulkAllocationController;
+use App\Http\Controllers\TutorDashboardController;
+use App\Http\Controllers\Admin\ReAllocateController;
 
 Route::get('/user', function (Request $request) {
     return $request->user();
@@ -66,9 +69,12 @@ Route::middleware('auth:sanctum')->group(function () {
 
 // Arranging Routes (Students Only)
 Route::middleware('auth:sanctum')->group(function () {
-    Route::post('/arranging', [ArrangingController::class, 'store']);          // ✅ Only students can create arrangements
-    Route::get('/arranging', [ArrangingController::class, 'index']);           // ✅ Students & Tutors can view
-    Route::get('/arranging/{id}', [ArrangingController::class, 'show']);       // ✅ Fetch arrangement details
-    Route::put('/arranging/{id}', [ArrangingController::class, 'update']);     // ✅ Update arrangement status
-    Route::delete('/arranging/{id}', [ArrangingController::class, 'destroy']); // ✅ Allow cancellation
+    Route::post('/arranging', [ArrangingController::class, 'store']);          //  Only students can create arrangements
+    Route::get('/arranging', [ArrangingController::class, 'index']);           //  Students & Tutors can view
+    Route::get('/arranging/{id}', [ArrangingController::class, 'show']);       //  Fetch arrangement details
+    Route::put('/arranging/{id}', [ArrangingController::class, 'update']);     //  Update arrangement status
+    Route::delete('/arranging/{id}', [ArrangingController::class, 'destroy']); //  Allow cancellation
 });
+
+// tutor dashboard
+Route::middleware('auth:sanctum')->get('/tutor/dashboard', [TutorDashboardController::class, 'index']);
