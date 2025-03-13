@@ -1,5 +1,8 @@
 <?php
 
+
+
+use App\Http\Controllers\StudentDashboardController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\TutorController;
@@ -44,6 +47,11 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/students/search', [App\Http\Controllers\StudentController::class, 'search']);
     Route::get('/students/namesort', [App\Http\Controllers\StudentController::class, 'sortStudents']);
     Route::get('/students/idsort', [App\Http\Controllers\StudentController::class, 'sortId']);
+
+    //-----This is for student's dashboard----//
+    Route::controller(StudentDashboardController::class)->group(function () {
+        Route::get('/student/dashboard', 'getDashboardData');
+    });
 });
 
 Route::middleware('auth:sanctum')->group(function () {
