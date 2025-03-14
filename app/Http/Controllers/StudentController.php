@@ -12,10 +12,10 @@ class StudentController extends Controller
     {
         $students = Student::whereNotIn('id', function ($query) {
             $query->select('student_id')->from('allocations');
-        })->paginate(10);
+        })->get();
 
         // dd($students);
-        return response()->json($students);
+        return response()->json([ "data"=>$students]);
     }
 
     public function search(Request $request)

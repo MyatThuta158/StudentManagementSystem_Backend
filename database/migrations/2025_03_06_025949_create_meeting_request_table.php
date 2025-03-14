@@ -22,7 +22,6 @@ return new class extends Migration
             $table->timestampTz('arrange_date');
             $table->boolean("approved");
             $table->string("topic");
-
             $table->enum("meeting_type",['online',"offline"]);
             $table->string("location")->nullable();
             $table->string("rejcet_reason")->nullable();

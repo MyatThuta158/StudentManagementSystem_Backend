@@ -61,9 +61,9 @@ class AllocationController extends Controller
     public function index(Request $request)
     {
         $perPage = $request->query('per_page', 10); // Default 10 per page
-        $allocations = Allocation::with(['staff', 'tutor', 'student'])->orderByDesc('created_at')->paginate($perPage);
+        $allocations = Allocation::with(['staff', 'tutor', 'student'])->orderByDesc('created_at')->get();
 
-        return response()->json($allocations, 200);
+        return response()->json(["data"=>$allocations], 200);
     }
 
 
