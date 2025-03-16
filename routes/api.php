@@ -1,8 +1,5 @@
 <?php
 
-
-
-use App\Http\Controllers\StudentDashboardController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\TutorController;
@@ -12,6 +9,7 @@ use App\Http\Controllers\AllocationController;
 use App\Http\Controllers\BulkAllocationController;
 use App\Http\Controllers\TutorDashboardController;
 use App\Http\Controllers\Admin\ReAllocateController;
+use App\Http\Controllers\StudentDashboardController;
 
 Route::get('/user', function (Request $request) {
     return $request->user();
