@@ -81,6 +81,7 @@ class TutorDashboardController extends Controller
         $blogging_insights = [
             'total_posts' => Blog::where('tutor_id', $tutor->id)->count(),
             'posts_by_students' => Blog::whereNotNull('student_id')->where('tutor_id', $tutor->id)->count(),
+            'posts_by_you' => Blog::whereNull('student_id')->where('tutor_id', $tutor->id)->count(),
             'last_blog_date' => Blog::where('tutor_id', $tutor->id)->latest()->first()?->created_at ?? null,
         ];
 
