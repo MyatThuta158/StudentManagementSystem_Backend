@@ -9,7 +9,8 @@ class MeetingDetail extends Model
 {
     use HasFactory, SoftDeletes;
 
-    protected $table    = 'meeting_detail';
+    protected $table = "meeting_detail";
+
     protected $fillable = [
         'arrange_date',
         'meeting_type',
