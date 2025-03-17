@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AdminDashboardController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\TutorController;
@@ -27,6 +28,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('allocations', [AllocationController::class, 'store']);
     Route::post('bulk/allocations', [BulkAllocationController::class, 'allocate']);
 
+    Route::get('/admin/dashboard', [AdminDashboardController::class,'index']);
+
     //allocation end
 
     // show non-allocated student
@@ -49,6 +52,7 @@ Route::middleware('auth:sanctum')->group(function () {
     //-----This is for student's dashboard----//
     Route::controller(StudentDashboardController::class)->group(function () {
         Route::get('/student/dashboard', 'getDashboardData');
+        
     });
 });
 
