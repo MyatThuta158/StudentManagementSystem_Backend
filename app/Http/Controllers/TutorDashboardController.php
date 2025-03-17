@@ -20,7 +20,10 @@ class TutorDashboardController extends Controller
         $tutor = Tutor::where('id', $request->user()->id)->first();
 
         if (!$tutor) {
-            return response()->json(['error' => 'Unauthorized'], 403);
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Unauthorized access',
+            ], 403);
         }
 
         // **Fetch groups assigned to the tutor** (Placeholder data)
@@ -77,11 +80,11 @@ class TutorDashboardController extends Controller
             'inactive' => $allocated_students->where('status', 'Inactive')->count(),
         ];
 
-        // **Fetch Blog Insights**
+        // **Fetch Blog Insights (Updated to Include "Posts by You")**
         $blogging_insights = [
             'total_posts' => Blog::where('tutor_id', $tutor->id)->count(),
             'posts_by_students' => Blog::whereNotNull('student_id')->where('tutor_id', $tutor->id)->count(),
-            'posts_by_you' => Blog::whereNull('student_id')->where('tutor_id', $tutor->id)->count(),
+            'posts_by_you' => Blog::whereNull('student_id')->where('tutor_id', $tutor->id)->count(), // ✅ Added "Posts by You"
             'last_blog_date' => Blog::where('tutor_id', $tutor->id)->latest()->first()?->created_at ?? null,
         ];
 
@@ -120,11 +123,15 @@ class TutorDashboardController extends Controller
 
         // **Return API Response**
         return response()->json([
-            'groups' => $groups,
-            'total_students' => $total_students,
-            'blogging_insights' => $blogging_insights,
-            'scheduled_meetings' => $scheduled_meetings,
-            'students' => $allocated_students, // Filtered student list
-        ]);
+            'status' => 'success',
+            'message' => 'Tutor dashboard data fetched successfully',
+            'data' => [
+                'groups' => $groups,
+                'total_students' => $total_students,
+                'blogging_insights' => $blogging_insights,
+                'scheduled_meetings' => $scheduled_meetings,
+                'students' => $allocated_students, // Filtered student list
+            ]
+        ], 200);
     }
 }
