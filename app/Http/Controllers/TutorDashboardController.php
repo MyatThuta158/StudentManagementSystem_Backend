@@ -26,13 +26,6 @@ class TutorDashboardController extends Controller
             ], 403);
         }
 
-        // **Fetch groups assigned to the tutor** (Placeholder data)
-        $groups = [
-            'teacher_group' => 10,
-            'class_5' => 9,
-            'class_6' => 5,
-        ];
-
         // **Get filter value from request (default: "all")**
         $filter = $request->query('status', 'all');
 
@@ -126,7 +119,6 @@ class TutorDashboardController extends Controller
             'status' => 'success',
             'message' => 'Tutor dashboard data fetched successfully',
             'data' => [
-                'groups' => $groups,
                 'total_students' => $total_students,
                 'blogging_insights' => $blogging_insights,
                 'scheduled_meetings' => $scheduled_meetings,
