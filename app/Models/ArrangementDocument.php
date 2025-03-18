@@ -9,7 +9,7 @@ class ArrangementDocument extends Model
 
     protected $primaryKey = 'id';
 
-    // Allow mass assignment for these fields
+
     protected $fillable = [
         'arrange_id',
         'feedback',
