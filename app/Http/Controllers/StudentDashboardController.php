@@ -16,6 +16,8 @@ class StudentDashboardController extends Controller
         // Get the currently authenticated student.
         $student = auth()->user();
 
+        //dd($student);
+
         // Prepare the user information.
         $userInfo = [
             'name'          => $student->name,
@@ -79,7 +81,13 @@ class StudentDashboardController extends Controller
             ->get();
         // ------------------------------------------------------- //
 
-        // return the JSON response.
+        // Retrieve the student's allocation with the related tutor.
+        // Assuming the student has at least one allocation, you can adjust as needed.
+        $allocation = $student->allocations()->with('tutor')->first();
+        $tutorName  = $allocation && $allocation->tutor ? $allocation->tutor->name : null;
+        $tutorEmail = $allocation && $allocation->tutor ? $allocation->tutor->email : null;
+
+        // Return the JSON response.
         return response()->json([
             'status' => 200,
             'data'   => [
@@ -87,6 +95,10 @@ class StudentDashboardController extends Controller
                     'name'          => $userInfo['name'],
                     'email'         => $userInfo['email'],
                     'last_login_at' => $userInfo['last_login_at'],
+                ],
+                'tutor'          => [
+                    'name'  => $tutorName,
+                    'email' => $tutorEmail,
                 ],
                 'vlogs'          => [
                     'student'   => $studentVlogs,
@@ -102,7 +114,6 @@ class StudentDashboardController extends Controller
                     'total'  => $totalDocuments,
                     'status' => $documentStatuses,
                 ],
-
                 'documents'      => $documents,
             ],
         ]);
