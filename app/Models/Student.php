@@ -33,6 +33,11 @@ class Student extends Authenticatable
         return $this->hasMany(Comments::class, 'student_id');
     }
 
+    public function blogs()
+    {
+        return $this->hasMany(Blog::class, 'student_id');
+    }
+
     public function loginLogs()
     {
         return $this->morphMany(\App\Models\LoginLog::class, 'userable');

@@ -11,18 +11,17 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('arrangement_document', function (Blueprint $table) {
+        Schema::create('assignment_arrangements', function (Blueprint $table) {
             $table->id();
+            $table->string("title");
+            $table->text('instructions')->nullable();
+            $table->text("content")->nullable();
             $table->unsignedBigInteger("arrange_id");
             $table->foreign("arrange_id")
                 ->references('id')->on('arrangings')
                 ->onDelete('cascade');
             $table->string("feedback");
-            $table->unsignedBigInteger("document_id");
-            $table->foreign("document_id")->references("id")->on("document")->onDelete('cascade');
-            
-            $table->unsignedBigInteger('created_by');
-            $table->enum("created_type",['tutor','student']);
+            $table->timestampTz('dead_line');
             $table->enum("status",['canceled','accepted','finished','watched']);
             $table->timestampsTz();
         });
@@ -33,6 +32,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('arrangement_document');
+        Schema::dropIfExists('assignment_arrangement');
     }
 };
