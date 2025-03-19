@@ -16,8 +16,6 @@ class StudentDashboardController extends Controller
         // Get the currently authenticated student.
         $student = auth()->user();
 
-        //dd($student);
-
         // Prepare the user information.
         $userInfo = [
             'name'          => $student->name,
@@ -25,18 +23,20 @@ class StudentDashboardController extends Controller
             'last_login_at' => $student->last_login_at,
         ];
 
+        // ---------------- VLOG STATISTICS ---------------- //
         // Retrieve vlogs uploaded by the student (author_role = "student")
         $studentVlogs = Blog::where('student_id', $student->id)
             ->where('author_role', 'student')
             ->count();
 
-        // Retrieve vlogs uploaded by the tutor
+        // Retrieve vlogs uploaded by the tutor (author_role = "tutor")
         $tutorVlogs = Blog::where('student_id', $student->id)
             ->where('author_role', 'tutor')
             ->count();
 
         $totalBlog = $studentVlogs + $tutorVlogs;
 
+        // ---------------- MEETING STATISTICS ---------------- //
         // Count online meetings for this student.
         $onlineMeetingsCount = MeetingDetail::with('arranging')
             ->where('meeting_type', 'online')
@@ -47,7 +47,7 @@ class StudentDashboardController extends Controller
 
         // Count campus meetings for this student.
         $campusMeetingsCount = MeetingDetail::with('arranging')
-            ->where('meeting_type', 'campus') // Use 'offline' if that's your enum value.
+            ->where('meeting_type', 'campus')
             ->whereHas('arranging', function ($q) use ($student) {
                 $q->where('student_id', $student->id);
             })
@@ -55,39 +55,52 @@ class StudentDashboardController extends Controller
 
         $totalMeeting = $onlineMeetingsCount + $campusMeetingsCount;
 
-        // ---------------- Document Statistics ---------------- //
+        // ---------------- DOCUMENT STATISTICS ---------------- //
         // Total documents created by the authenticated user in the "document" table.
         $totalDocuments = Document::where('created_by', $student->id)
             ->where('created_type', 'student')
             ->count();
 
-        // Fetch the count of documents per status from the "arrangement_document" table.
+        // Fetch the count of documents per status from the joined tables.
+        // This uses the new pivot (arrangement_document) and assignment_arrangements table.
         $documentStatusesQuery = DB::table('arrangement_document')
-            ->select('status', DB::raw('count(*) as total'))
-            ->where('created_by', $student->id)
-            ->groupBy('status')
+            ->join('assignment_arrangements', 'arrangement_document.assignment_arrangement_id', '=', 'assignment_arrangements.id')
+            ->join('document', 'arrangement_document.document_id', '=', 'document.id')
+            ->select('assignment_arrangements.status', DB::raw('count(*) as total'))
+            ->where('document.created_by', $student->id)
+            ->where('document.created_type', 'student')
+            ->groupBy('assignment_arrangements.status')
             ->get();
 
-        // Convert the result to an associative array for easy consumption.
         $documentStatuses = [];
-        foreach ($documentStatusesQuery as $status) {
-            $documentStatuses[$status->status] = $status->total;
+        foreach ($documentStatusesQuery as $row) {
+            $documentStatuses[$row->status] = $row->total;
         }
 
-        //------------Fetch related document for table----//
-        $documents = Document::select('document.file_name', 'arrangement_document.status', 'document.created_at')
+        // Fetch detailed document information, including:
+        // - file_name (from document)
+        // - uploaded_date (from document.created_at)
+        // - deadline (from assignment_arrangements.dead_line)
+        // - status (from assignment_arrangements.status)
+        $documents = Document::select(
+            'document.file_name',
+            'document.created_at as uploaded_date',
+            'assignment_arrangements.dead_line as deadline',
+            'assignment_arrangements.status'
+        )
             ->join('arrangement_document', 'document.id', '=', 'arrangement_document.document_id')
+            ->join('assignment_arrangements', 'arrangement_document.assignment_arrangement_id', '=', 'assignment_arrangements.id')
             ->where('document.created_by', $student->id)
+            ->where('document.created_type', 'student')
             ->get();
-        // ------------------------------------------------------- //
 
+        // ---------------- TUTOR ALLOCATION INFO ---------------- //
         // Retrieve the student's allocation with the related tutor.
-        // Assuming the student has at least one allocation, you can adjust as needed.
         $allocation = $student->allocations()->with('tutor')->first();
         $tutorName  = $allocation && $allocation->tutor ? $allocation->tutor->name : null;
         $tutorEmail = $allocation && $allocation->tutor ? $allocation->tutor->email : null;
 
-        // Return the JSON response.
+        // ---------------- RETURN RESPONSE ---------------- //
         return response()->json([
             'status' => 200,
             'data'   => [

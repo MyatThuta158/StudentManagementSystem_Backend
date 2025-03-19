@@ -15,16 +15,16 @@ class ArrangementDocumentSeeder extends Seeder
         $statuses     = ['canceled', 'accepted', 'finished', 'watched'];
         $createdTypes = ['tutor', 'student'];
 
-        for ($i = 1; $i <= 20; $i++) {
+        for ($i = 1; $i <= 10; $i++) {
             DB::table('arrangement_document')->insert([
-                'arrange_id'   => 3,
-                'feedback'     => 'Feedback for arrangement document ' . $i,
-                'document_id'  => rand(1, 20),
-                'created_by'   => 1,
-                'created_type' => 'student',
-                'status'       => $statuses[array_rand($statuses)],
-                'created_at'   => Carbon::now(),
-                'updated_at'   => Carbon::now(),
+                'assignment_arrangement_id' => 2,
+                // 'feedback'                  => 'Feedback for arrangement document ' . $i,
+                'document_id'               => rand(151, 160),
+                'created_by'                => 1,
+                'created_type'              => 'student',
+                // 'status'                    => $statuses[array_rand($statuses)],
+                'created_at'                => Carbon::now(),
+                'updated_at'                => Carbon::now(),
             ]);
         }
     }
