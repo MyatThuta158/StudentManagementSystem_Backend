@@ -11,17 +11,19 @@ return new class extends Migration
      */
     public function up(): void
     {
+
+        //-------Don't eliminate author_role column, it is important. Please----//
         Schema::create('blogs', function (Blueprint $table) {
             $table->id();
             $table->string("author");
-            $table->string("title"); // ✅ Renamed from "header"
+            $table->string("title");
             $table->text("content");
-            $table->unsignedBigInteger("student_id")->nullable(); // ✅ Now nullable
-            $table->unsignedBigInteger("tutor_id")->nullable(); // ✅ Now nullable
+            $table->string('author_role');
+            $table->unsignedBigInteger("student_id")->nullable();
+            $table->unsignedBigInteger("tutor_id")->nullable();
             $table->timestampsTz();
             $table->softDeletesTz();
 
-            // ✅ Move foreign keys here to avoid potential issues
             $table->foreign("tutor_id")->references("id")->on("tutors")->onDelete("cascade");
             $table->foreign("student_id")->references("id")->on("students")->onDelete("cascade");
         });

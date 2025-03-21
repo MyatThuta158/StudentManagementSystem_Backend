@@ -53,7 +53,7 @@ Route::middleware('auth:sanctum')->group(function () {
     //-----This is for student's dashboard----//
     Route::controller(StudentDashboardController::class)->group(function () {
         Route::get('/student/dashboard', 'getDashboardData');
-        
+
     });
 });
 
