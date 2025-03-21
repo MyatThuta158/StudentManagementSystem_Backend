@@ -71,14 +71,16 @@ class ArrangingController extends Controller
         ]);
 
         // Check if an arrangement already exists for the student and tutor
-        $existingArrangement = Arranging::where('tutor_id', $user->id)
-            ->where('student_id', $validated['student_id'])
-            ->where('status', 'pending')
-            ->exists();
+        // $existingArrangement = Arranging::where('tutor_id', $user->id)
+        //     ->where('student_id', $validated['student_id'])
+        //     ->where('status', 'pending')
+        //     ->exists();
 
-        if ($existingArrangement) {
-            return response()->json(['message' => 'An active arrangement already exists with this student.'], 409);
-        }
+        // dd($existingArrangement);
+
+        // if ($existingArrangement) {
+        //     return response()->json(['message' => 'An active arrangement already exists with this student.'], 409);
+        // }
 
         // Create Arranging Entry
         $arranging = Arranging::create([

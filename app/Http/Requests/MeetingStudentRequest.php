@@ -23,7 +23,6 @@ class MeetingStudentRequest extends FormRequest
     {
         return [
             'tutor_id' => 'required',
-            "topic" => 'required|string',
             "arrange_date" => 'required|date',
             "meeting_type"=> 'required|string',
             "meeting_place"=> 'required|string',
