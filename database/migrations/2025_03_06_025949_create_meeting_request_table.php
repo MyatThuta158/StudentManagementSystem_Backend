@@ -28,7 +28,7 @@ return new class extends Migration
             $table->unsignedBigInteger("approved_arrange_id")->nullable();
             $table->foreign("approved_arrange_id")->references('id')->on('arrangings')->cascadeOnDelete();
             $table->timestampTz("approved_reject_date")->nullable();
-            $table->enum("status",["pending","approved","rejcet"])->default("pending");
+            $table->enum("status",["pending","approved","reject","cancelled"])->default("pending");
 
             $table->timestampsTz();
         });
