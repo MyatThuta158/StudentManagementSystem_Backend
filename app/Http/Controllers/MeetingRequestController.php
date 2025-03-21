@@ -113,7 +113,7 @@ class MeetingRequestController extends Controller
         DB::beginTransaction();
         try{
             $oldMeetingDetail->update([
-                "status"=>"cancelled"
+                "status"=>"rescheduled"
             ]);
             $meetingDetail = MeetingDetail::create($meetingDetail);
             DB::commit();
