@@ -33,7 +33,7 @@ class MeetingRequestController extends Controller
             "topic"=>$validated['topic'],
             "meeting_type"=>$validated['meeting_type'],
             "location"=> $validated['location'],
-            "meeting_app"=>$validated['meeting_app'],
+            "online_meeting_applicaiton"=>$validated['meeting_app'],
             "approve"=>false,
             "approved_arrange_id"=>$arrange_id
         ];
@@ -75,16 +75,22 @@ class MeetingRequestController extends Controller
         $model->rejcet_reason = "";
         $model->updated_at = Carbon::now('UTC');
         $model->save();
+        $oldMeetingDetail= MeetingDetail::where("arrange_id",$model->arrange_id)->where("status","pending")->first();
+        $oldMeetingDetail->status = "cancelled";
         $meetingDetail = [
             "arrange_date"=>$model->arrange_date,
             "meeting_type"=> $model->meeting_type,
             "topic"=>$model->topic,
             "location"=>$model->location,
-            ""=>"",
+            "online_meeting_applicaiton"=>$model->online_meeting_application,
+            "arrange_id"=>$model->arrange_id,
+            "status"=>"pending",
             "meeting_link"=>$model->meeting_link,
             "details"=>"Hello"
         ];
-        return response()->json(ResponseModel::Ok($model,$model->id,"Rejected Successfully"));
+        $oldMeetingDetail->save();
+        $data = MeetingDetail::create($meetingDetail);
+        return response()->json(ResponseModel::Ok($data,$model->id,"Rejected Successfully"));
     }
 
 }

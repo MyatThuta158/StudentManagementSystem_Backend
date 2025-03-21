@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::table('meeting_request', function (Blueprint $table) {
             $table->addColumn("string","meeting_app")->nullable();
+            $table->addColumn("string","online_meeting_applicaiton")->nullable();
         });
     }
 
