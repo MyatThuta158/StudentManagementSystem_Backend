@@ -21,7 +21,7 @@ class DatabaseSeeder extends Seeder
             $this->call(StudentSeeder::class);
             $this->call(StaffSeeder::class);
             $this->call(AllocationSeeder::class);
-            $this->call(BlogSeeder::class); // ✅ Add BlogSeeder
+            // $this->call(BlogSeeder::class); // ✅ Add BlogSeeder
 
             DB::commit();
         } catch (\Exception $e) {

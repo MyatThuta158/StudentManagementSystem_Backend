@@ -69,8 +69,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/meetingrequest/{arrange_id}', [MeetingRequestController::class, 'index']);           // List all comments
     Route::post('/meetingrequest/{arrange_id}', [MeetingRequestController::class, 'create']);          // Add a comment
     Route::put('/meetingrequest/cancel/{id}', [MeetingRequestController::class, 'cancelRequest']);     // Update a comment
-    Route::get('/meetingrequest/reject/{id}', [MeetingRequestController::class, 'rejectRequest']);       // Get a single comment
-    Route::delete('/meetingrequest/approve/{id}', [MeetingRequestController::class, 'approveRequest']); // Delete a comment
+    Route::put('/meetingrequest/reject/{id}', [MeetingRequestController::class, 'rejectRequest']);       // Get a single comment
+    Route::put('/meetingrequest/approve/{id}', [MeetingRequestController::class, 'approveRequest']); // Delete a comment
 });
 
 Route::middleware('auth:sanctum')->group(function () {
