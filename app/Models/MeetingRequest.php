@@ -9,6 +9,8 @@ class MeetingRequest extends Model
 {
     use HasFactory;
 
+    protected $table = "meeting_request";
+
     protected $fillable = [
         'student_id',
         'tutor_id',
