@@ -12,6 +12,7 @@ use App\Notifications\AllocatedTutor;
 use App\ResponseModel\ResponseModel;
 use Carbon\Carbon;
 use DB;
+use Exception;
 use Log;
 
 class BulkAllocationController extends Controller
@@ -19,6 +20,7 @@ class BulkAllocationController extends Controller
     public function allocate(BulkAllocationRequest $request)
     {
         $requested_vars = $request->safe();
+
 
         $allocates = [];
         foreach ($requested_vars->student_ids as $i) {
@@ -37,6 +39,12 @@ class BulkAllocationController extends Controller
         }
         DB::beginTransaction();
         try {
+            $assigned_students = Allocation::where('tutor_id',$request->tutor_id)->count();
+
+            if(($assigned_students+ $tmpAllocate) > 30){
+                throw new Exception("Single tutor can assign up to 30 students. Current teacher has $assigned_student students.");
+            }
+
             foreach ($allocates as $i) {
                 Allocation::create($i);
                 // send notification
@@ -49,6 +57,7 @@ class BulkAllocationController extends Controller
                 dispatch($tutor_job);
                 // end send notification
             }
+            
             Log::info("Bulk Imported Successfully");
             DB::commit();
             return response()->json(ResponseModel::Ok(true, "", "Successfully allocated students with tutor."));
