@@ -24,6 +24,12 @@ class AllocationController extends Controller
             'student_id' => 'required|exists:students,id',
         ]);
 
+        $assigned_students = Allocation::where('tutor_id',$request->tutor_id)->count();
+
+        if($assigned_students > 30){
+            return response()->json(['error' => 'Single tutor can assign up to 30 students.'], 400);
+        }
+
         $staff = Auth::user();
 
         if (!$staff) {

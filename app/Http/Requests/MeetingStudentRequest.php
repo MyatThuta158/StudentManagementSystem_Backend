@@ -27,7 +27,7 @@ class MeetingStudentRequest extends FormRequest
             "meeting_type"=> 'required|string',
             "meeting_place"=> 'required|string',
             "meeting_app" => 'nullable|string',
-            "reason"=> 'required|string',
+            "reason"=> 'nullable|string',
         ];
     }
 }

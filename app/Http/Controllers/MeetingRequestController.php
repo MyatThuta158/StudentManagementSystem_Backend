@@ -73,11 +73,14 @@ class MeetingRequestController extends Controller
         if((!auth()->user()->hasAnyRole('tutor'))){
             return response()->json(ResponseModel::Failed(null,"","failed"));
         }
+        $validated_data = request()->validate([
+            'reject_reason' => 'nullable|string'
+        ]);
         $sample =[];
         $model = MeetingRequest::where('id',$id)->first();
         $sample['status'] = "reject";
         $sample['approved_reject_date'] = Carbon::now('UTC');
-        $sample['rejcet_reason'] = "";
+        $sample['rejcet_reason'] = array_key_exists('reject_reason',$validated_data) ? $validated_data['reject_reason'] : "";
         $sample['updated_at'] = Carbon::now('UTC');
         $model->update($sample);
         return response()->json(ResponseModel::Ok($model,$model->id,"Rejected Successfully"));
