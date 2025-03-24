@@ -17,7 +17,7 @@ class ArrangementDocumentSeeder extends Seeder
 
         for ($i = 1; $i <= 10; $i++) {
             DB::table('arrangement_document')->insert([
-                'assignment_arrangement_id' => 2,
+                'assignment_arrangement_id' => 9,
                 // 'feedback'                  => 'Feedback for arrangement document ' . $i,
                 'document_id'               => rand(151, 160),
                 'created_by'                => 1,
