@@ -14,9 +14,9 @@ return new class extends Migration
         Schema::create('blog_documents', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger("blog_id");
-            $table->unsignedBigInteger("document_id");
+            $table->text('BlogDocumentFile');
             $table->foreign("blog_id")->references("id")->on("blogs")->onDelete('cascade');
-            $table->foreign("document_id")->references("id")->on("document")->onDelete('cascade');
+
             $table->timestamps();
         });
     }
