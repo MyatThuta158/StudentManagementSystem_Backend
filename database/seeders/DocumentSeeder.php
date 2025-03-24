@@ -18,7 +18,7 @@ class DocumentSeeder extends Seeder
             DB::table('document')->insert([
                 'file'         => 'document_' . $i . '.pdf',
                 'file_name'    => 'Document ' . $i,
-                'created_by'   => 1,
+                'created_by'   => 2,
                 'created_type' => 'student',
                 'created_at'   => Carbon::now(),
                 'updated_at'   => Carbon::now(),
