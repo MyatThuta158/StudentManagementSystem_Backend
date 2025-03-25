@@ -3,6 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\Allocation;
+use App\Models\Arranging;
+use App\Models\Student;
+use App\ResponseModel\ResponseModel;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\DB;
@@ -24,9 +28,9 @@ class AllocationController extends Controller
             'student_id' => 'required|exists:students,id',
         ]);
 
-        $assigned_students = Allocation::where('tutor_id',$request->tutor_id)->count();
+        $assigned_students = Allocation::where('tutor_id', $request->tutor_id)->count();
 
-        if($assigned_students > 30){
+        if ($assigned_students > 30) {
             return response()->json(['error' => 'Single tutor can assign up to 30 students.'], 400);
         }
 
@@ -69,7 +73,7 @@ class AllocationController extends Controller
         $perPage = $request->query('per_page', 10); // Default 10 per page
         $allocations = Allocation::with(['staff', 'tutor', 'student'])->orderByDesc('created_at')->get();
 
-        return response()->json(["data"=>$allocations], 200);
+        return response()->json(["data" => $allocations], 200);
     }
 
 
@@ -109,5 +113,39 @@ class AllocationController extends Controller
         $allocations = $query->paginate($perPage); // Apply pagination
 
         return response()->json($allocations, 200);
+    }
+
+    public function ListSearch($student_id, Request $request)
+    {
+        $tutor_id = auth()->user()->id;
+        $student = Student::where('id', $student_id)->first();
+
+        $sample_output = Arranging::where('student_id', $student_id)->where('tutor_id', $tutor_id)->with(['meetingDetails'])->get()->map(function ($e, $i) {
+            $temp = $e['meetingDetails']->whereIn('status', ['pending', 'cancelled', 'completed'])->first();
+            $meetingDetailCount = $e['meetingDetails']->count();
+            return [
+                "id" => $e['id'],
+                "title" => $temp['topic'],
+                "date" => Carbon::parse($e['arrange_date']),
+                "time" => Carbon::parse($e['arrange_date']),
+                "meeting_type" => $temp['meeting_type'],
+                "description" => $temp['description'],
+                "meeting_link" => $temp['meeting_link'],
+                "location" => $temp['location'],
+                "status" => $meetingDetailCount > 1 ? "rescheduled" : ($e['status'] == "pending" ? "upcomming" : $e['status'])
+            ];
+        });
+
+        $sample_output = $sample_output->groupBy('status');
+
+        $result = [
+            "id" => $student->id,
+            "name" => $student->name,
+            "email" => $student->email,
+            "student_id"=>$student->StudentID,
+            "meetings" => $sample_output
+        ];
+
+        return response()->json(ResponseModel::Ok($result, '', "Meeting Fetched Successfully"));
     }
 }

@@ -31,6 +31,8 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::get('/admin/dashboard', [AdminDashboardController::class, 'index']);
 
+    Route::get('/meetinglist/{id}',[AllocationController::class,'ListSearch']);
+
     //allocation end
 
     // show non-allocated student
