@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -12,7 +11,7 @@ class Arranging extends Model
     protected $fillable = [
         'student_id',
         'tutor_id',
-        'status'
+        'status',
     ];
 
     // Relationships

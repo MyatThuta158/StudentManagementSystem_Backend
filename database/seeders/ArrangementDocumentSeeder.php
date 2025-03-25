@@ -17,10 +17,10 @@ class ArrangementDocumentSeeder extends Seeder
 
         for ($i = 1; $i <= 10; $i++) {
             DB::table('arrangement_document')->insert([
-                'assignment_arrangement_id' => 2,
+                'assignment_arrangement_id' => 3,
                 // 'feedback'                  => 'Feedback for arrangement document ' . $i,
-                'document_id'               => rand(151, 160),
-                'created_by'                => 1,
+                'document_id'               => rand(11, 20),
+                'created_by'                => 2,
                 'created_type'              => 'student',
                 // 'status'                    => $statuses[array_rand($statuses)],
                 'created_at'                => Carbon::now(),
