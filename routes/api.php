@@ -24,6 +24,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::put('/allocations/{allocateId}', [ReAllocateController::class, 'reallocate']);
     // allocation start
     Route::get('allocations', [AllocationController::class, 'index']);
+    Route::get('allocations/student', [AllocationController::class, 'ListStudents']);
     Route::get('/allocations/search', [AllocationController::class, 'search']);
     Route::get('allocations/{id}', [AllocationController::class, 'show']);
     Route::post('allocations', [AllocationController::class, 'store']);
@@ -31,6 +32,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::get('/admin/dashboard', [AdminDashboardController::class, 'index']);
 
+    Route::get('/meetinglist/student',[AllocationController::class,'ListSearchStudent']);
     Route::get('/meetinglist/{id}',[AllocationController::class,'ListSearch']);
 
     //allocation end

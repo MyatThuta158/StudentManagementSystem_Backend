@@ -132,11 +132,12 @@ class AllocationController extends Controller
                 "description" => $temp['description'],
                 "meeting_link" => $temp['meeting_link'],
                 "location" => $temp['location'],
-                "status" => $meetingDetailCount > 1 ? "rescheduled" : ($e['status'] == "pending" ? "upcomming" : $e['status'])
+                "status" => $meetingDetailCount > 1 ? "rescheduled" : ($e['status'] == "pending" ? "upcomming" : $e['status']),
+                "filter_status"=> Carbon::parse($e['arrange_date'])->tz("UTC") > Carbon::now("UTC") ? "upcoming" : "pastdue"
             ];
         });
 
-        $sample_output = $sample_output->groupBy('status');
+        $sample_output = $sample_output->groupBy('filter_status');
 
         $result = [
             "id" => $student->id,
@@ -147,5 +148,52 @@ class AllocationController extends Controller
         ];
 
         return response()->json(ResponseModel::Ok($result, '', "Meeting Fetched Successfully"));
+    }
+
+    public function ListSearchStudent(Request $request)
+    {
+        $student_id = auth()->user()->id;
+        $student = Student::where('id', $student_id)->first();
+        $tutor_id = Arranging::where('student_id',$student_id)->first()->tutor_id;
+
+        $sample_output = Arranging::where('student_id', $student_id)->where('tutor_id', $tutor_id)->with(['meetingDetails'])->get()->map(function ($e, $i) {
+            $temp = $e['meetingDetails']->whereIn('status', ['pending', 'cancelled', 'completed'])->first();
+            $meetingDetailCount = $e['meetingDetails']->count();
+            return [
+                "id" => $e['id'],
+                "title" => $temp['topic'],
+                "date" => Carbon::parse($e['arrange_date']),
+                "time" => Carbon::parse($e['arrange_date']),
+                "meeting_type" => $temp['meeting_type'],
+                "description" => $temp['description'],
+                "meeting_link" => $temp['meeting_link'],
+                "location" => $temp['location'],
+                "status" => $meetingDetailCount > 1 ? "rescheduled" : ($e['status'] == "pending" ? "upcomming" : $e['status']),
+                "filter_status"=> Carbon::parse($e['arrange_date'])->tz("UTC") > Carbon::now("UTC") ? "upcoming" : "pastdue"
+            ];
+        });
+
+        $sample_output = $sample_output->groupBy('filter_status');
+
+        $result = [
+            "id" => $student->id,
+            "name" => $student->name,
+            "email" => $student->email,
+            "student_id"=>$student->StudentID,
+            "meetings" => $sample_output
+        ];
+
+        return response()->json(ResponseModel::Ok($result, '', "Meeting Fetched Successfully"));
+    }
+
+    public function ListStudents()
+    {
+        $tutor_id = auth()->user()->id;
+        $student = Allocation::where('tutor_id', $tutor_id)->get();
+        $student=$student->map(function($e){
+            return $e['student'];
+        });
+
+        return response()->json(ResponseModel::Ok($student, '', "Student related to teacher Fetched Successfully"));
     }
 }
