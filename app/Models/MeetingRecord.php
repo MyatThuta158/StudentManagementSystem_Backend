@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -10,10 +9,11 @@ class MeetingRecord extends Model
 {
     use HasFactory, SoftDeletes;
 
+    protected $table    = 'meeting_record';
     protected $fillable = [
         'arrange_id',
         'meeting_note',
-        'uploaded_document'
+        'uploaded_document',
     ];
 
     // Relationships

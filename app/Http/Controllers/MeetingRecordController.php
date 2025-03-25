@@ -3,6 +3,7 @@ namespace App\Http\Controllers;
 
 use App\Models\MeetingRecord;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 
 class MeetingRecordController extends Controller
@@ -15,6 +16,14 @@ class MeetingRecordController extends Controller
      */
     public function store(Request $request)
     {
+        ob_clean();
+        $user = Auth::user();
+
+        // Check if the authenticated user has permission to create a blog
+        if (! $user || ! $user->hasRole('tutor')) {
+            return response()->json(['error' => 'Only tutors can create meeting record.'], 403);
+        }
+
         // Validate the request data.
         $validatedData = $request->validate([
             'arrange_id'        => 'required|integer|exists:arrangings,id',
@@ -31,7 +40,7 @@ class MeetingRecordController extends Controller
         // Create the meeting record.
         $meetingRecord = MeetingRecord::create($validatedData);
 
-        return response()->json($meetingRecord, 201);
+        return response()->json(['message' => 'Meeting record saved successfully', 'status' => '201']);
     }
 
     /**
@@ -42,8 +51,15 @@ class MeetingRecordController extends Controller
      */
     public function show($id)
     {
+        $user = Auth::user();
+
+        // Check if the authenticated user has permission to create a blog
+        if (! $user) {
+            return response()->json(['error' => 'Only tutors can create meeting record.'], 403);
+        }
+
         $meetingRecord = MeetingRecord::findOrFail($id);
-        return response()->json($meetingRecord);
+        return response()->json(['message' => $meetingRecord, 'status' => '200']);
     }
 
     /**
@@ -55,6 +71,13 @@ class MeetingRecordController extends Controller
      */
     public function update(Request $request, $id)
     {
+        ob_clean();
+        $user = Auth::user();
+
+        // Check if the authenticated user has permission to create a blog
+        if (! $user || ! $user->hasRole('tutor')) {
+            return response()->json(['error' => 'Only tutors can update meeting record.'], 403);
+        }
         $meetingRecord = MeetingRecord::findOrFail($id);
 
         // Validate the request data.
@@ -62,22 +85,15 @@ class MeetingRecordController extends Controller
             'arrange_id'        => 'sometimes|required|integer|exists:arrangings,id',
             'meeting_note'      => 'sometimes|required|string',
             'uploaded_document' => 'nullable|file',
-            'remove_file'       => 'nullable|boolean',
         ]);
 
-        // Check if user wants to remove the file without uploading a new one.
-        if ($request->has('remove_file') && $request->input('remove_file')) {
-            if ($meetingRecord->uploaded_document && Storage::disk('public')->exists($meetingRecord->uploaded_document)) {
-                Storage::disk('public')->delete($meetingRecord->uploaded_document);
-            }
-            $validatedData['uploaded_document'] = null;
-        }
-
-        // If a new file is uploaded, delete the old file first.
+        // Check if a new file is provided.
         if ($request->hasFile('uploaded_document')) {
+            // If an existing document is already stored, delete it.
             if ($meetingRecord->uploaded_document && Storage::disk('public')->exists($meetingRecord->uploaded_document)) {
                 Storage::disk('public')->delete($meetingRecord->uploaded_document);
             }
+            // Store the new file.
             $path                               = $request->file('uploaded_document')->store('uploads', 'public');
             $validatedData['uploaded_document'] = $path;
         }
@@ -85,7 +101,7 @@ class MeetingRecordController extends Controller
         // Update the meeting record.
         $meetingRecord->update($validatedData);
 
-        return response()->json($meetingRecord);
+        return response()->json(['message' => 'Meeting record update successfully!', 'status' => 200]);
     }
 
     /**
@@ -96,7 +112,16 @@ class MeetingRecordController extends Controller
      */
     public function destroy($id)
     {
+
+        $user = Auth::user();
+
+        // Check if the authenticated user has permission to create a blog
+        if (! $user || ! $user->hasRole('tutor')) {
+            return response()->json(['error' => 'Only tutors can delete meeting record.'], 403);
+        }
         $meetingRecord = MeetingRecord::findOrFail($id);
+
+        // dd($meetingRecord);
 
         // Delete the file if it exists.
         if ($meetingRecord->uploaded_document && Storage::disk('public')->exists($meetingRecord->uploaded_document)) {
@@ -106,6 +131,6 @@ class MeetingRecordController extends Controller
         // Soft delete the record.
         $meetingRecord->delete();
 
-        return response()->json(['message' => 'Meeting record deleted successfully.']);
+        return response()->json(['message' => 'Meeting record deleted successfully.', 'status' => 200]);
     }
 }

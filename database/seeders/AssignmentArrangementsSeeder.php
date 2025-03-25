@@ -19,7 +19,7 @@ class AssignmentArrangementsSeeder extends Seeder
                 'title'        => 'Math Assignment',
                 'instructions' => 'Solve all the problems in the attached document.',
                 'content'      => 'Detailed content for the math assignment.',
-                'arrange_id'   => 1, // Make sure this id exists in the arrangings table
+                'arrange_id'   => 2, // Make sure this id exists in the arrangings table
                 'feedback'     => 'Good work, but review question 3 for improvements.',
                 'dead_line'    => $now->copy()->addDays(7),
                 'status'       => 'accepted', // One of: canceled, accepted, finished, watched
