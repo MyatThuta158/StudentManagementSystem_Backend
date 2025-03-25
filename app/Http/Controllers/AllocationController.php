@@ -148,4 +148,15 @@ class AllocationController extends Controller
 
         return response()->json(ResponseModel::Ok($result, '', "Meeting Fetched Successfully"));
     }
+
+    public function ListStudents()
+    {
+        $tutor_id = auth()->user()->id;
+        $student = Allocation::where('tutor_id', $tutor_id)->get();
+        $student=$student->map(function($e){
+            return $e['student'];
+        });
+
+        return response()->json(ResponseModel::Ok($student, '', "Student related to teacher Fetched Successfully"));
+    }
 }
