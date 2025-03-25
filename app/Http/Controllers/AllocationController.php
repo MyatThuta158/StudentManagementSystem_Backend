@@ -3,6 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\Allocation;
+use App\Models\Arranging;
+use App\Models\Student;
+use App\ResponseModel\ResponseModel;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\DB;
@@ -109,5 +113,30 @@ class AllocationController extends Controller
         $allocations = $query->paginate($perPage); // Apply pagination
 
         return response()->json($allocations, 200);
+    }
+
+    public function ListSearch($student_id,Request $request){
+        $tutor_id = auth()->user()->id;
+        $arranging = Student::where('id',$student_id)->get();
+
+        $sample_output = Arranging::where('student_id',$student_id)->where('tutor_id',$tutor_id)->with(['meetingDetails'])->get()->map(function($e,$i){
+            $temp = $e['meetingDetails']->whereIn('status',['pending','cancelled','completed'])->first();
+            $meetingDetailCount = $e['meetingDetails']->count();
+            return [
+                "id"=> $e['id'],
+                "title"=> $temp['topic'],
+                "date"=>Carbon::parse($e['arrange_date']),
+                "time"=>Carbon::parse($e['arrange_date']),
+                "meeting_type"=>$temp['meeting_type'],
+                "description"=> $temp['description'],
+                "meeting_link"=>$temp['meeting_link'],
+                "location"=>$temp['location'],
+                "status"=> $meetingDetailCount > 1 ? "rescheduled" : ($e['status'] == "pending" ?  "upcomming" : $e['status'] )
+            ];
+        });
+
+        $sample_output= $sample_output->groupBy('status');
+
+        return response()->json(ResponseModel::Ok($sample_output,'',"Meeting Fetched Successfully"));
     }
 }
