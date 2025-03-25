@@ -41,7 +41,7 @@ class BulkAllocationController extends Controller
         try {
             $assigned_students = Allocation::where('tutor_id',$request->tutor_id)->count();
 
-            if(($assigned_students+ $tmpAllocate) > 30){
+            if(($assigned_students + count($allocates)) > 30){
                 throw new Exception("Single tutor can assign up to 30 students. Current teacher has $assigned_student students.");
             }
 
