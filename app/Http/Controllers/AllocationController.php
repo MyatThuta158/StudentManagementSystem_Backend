@@ -121,7 +121,7 @@ class AllocationController extends Controller
         $student = Student::where('id', $student_id)->first();
 
         $sample_output = Arranging::where('student_id', $student_id)->where('tutor_id', $tutor_id)->with(['meetingDetails'])->get()->map(function ($e, $i) {
-            $temp = $e['meetingDetails']->whereIn('status', ['pending', 'completed'])->first();
+            $temp = $e['meetingDetails']->whereIn('status', ['pending', 'completed'])->sortByDesc("created_at")->first();
             $meetingDetailCount = $e['meetingDetails']->count();
             return [
                 "id" => $e['id'],
@@ -131,6 +131,7 @@ class AllocationController extends Controller
                 "meeting_type" => $temp['meeting_type'],
                 "description" => $temp['description'],
                 "meeting_link" => $temp['meeting_link'],
+                "meeting_app"=>$temp['online_meeting_applicaiton_type'],
                 "location" => $temp['location'],
                 "status" => $meetingDetailCount > 1 ? "rescheduled" : ($e['status'] == "pending" ? "upcomming" : $e['status']),
                 "filter_status"=> Carbon::parse($temp['arrange_date'])->tz("UTC") > Carbon::now("UTC") ? "upcoming" : "pastdue"
@@ -157,7 +158,7 @@ class AllocationController extends Controller
         $tutor_id = Arranging::where('student_id',$student_id)->first()->tutor_id;
 
         $sample_output = Arranging::where('student_id', $student_id)->where('tutor_id', $tutor_id)->with(['meetingDetails'])->get()->map(function ($e, $i) {
-            $temp = $e['meetingDetails']->whereIn('status', ['pending', 'cancelled', 'completed'])->orderByDesc("created_at")->first();
+            $temp = $e['meetingDetails']->whereIn('status', ['pending', 'cancelled', 'completed'])->sortByDesc("created_at")->first();
             $meetingDetailCount = $e['meetingDetails']->count();
             return [
                 "id" => $e['id'],
