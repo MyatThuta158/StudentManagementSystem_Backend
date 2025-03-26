@@ -55,7 +55,7 @@ class MeetingRecordController extends Controller
 
         // Check if the authenticated user has permission to create a blog
         if (! $user) {
-            return response()->json(['error' => 'Only tutors can create meeting record.'], 403);
+            return response()->json(['error' => 'Only authenticated user can view this!'], 403);
         }
 
         $meetingRecord = MeetingRecord::findOrFail($id);
