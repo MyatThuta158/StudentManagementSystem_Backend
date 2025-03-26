@@ -10,8 +10,6 @@ class AuthController extends Controller
 {
     public function login(Request $request)
     {
-
-        // dd('enter');
         try {
             $validate = $request->validate([
                 'email'    => 'required|email|string',
@@ -29,8 +27,6 @@ class AuthController extends Controller
             $agent = new Agent();
             $agent->setUserAgent($request->header('User-Agent'));
             $browserName = $agent->browser();
-
-            dd($browserName);
 
             // Admin (Staff) login
             $admin = \App\Models\Staff::where('email', $email)->first();
