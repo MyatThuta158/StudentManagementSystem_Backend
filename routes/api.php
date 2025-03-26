@@ -56,7 +56,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::post('meetingrecord/store', [App\Http\Controllers\MeetingRecordController::class, 'store']);
     Route::get('meetingrecord/show/{id}', [App\Http\Controllers\MeetingRecordController::class, 'show']);
-    Route::put('meetingrecord/update/{id}', [App\Http\Controllers\MeetingRecordController::class, 'update']);
+    Route::post('meetingrecord/update/{id}', [App\Http\Controllers\MeetingRecordController::class, 'update']);
     Route::delete('meetingrecord/delete/{id}', [App\Http\Controllers\MeetingRecordController::class, 'destroy']);
     //-----This is for student's dashboard----//
     Route::controller(StudentDashboardController::class)->group(function () {
