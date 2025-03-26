@@ -120,7 +120,7 @@ class AllocationController extends Controller
         $tutor_id = auth()->user()->id;
         $student = Student::where('id', $student_id)->first();
 
-        $sample_output = Arranging::where('student_id', $student_id)->where('tutor_id', $tutor_id)->with(['meetingDetails'])->get()->map(function ($e, $i) {
+        $sample_output = Arranging::where('student_id', $student_id)->where('tutor_id', $tutor_id)->has("meetingDetails")->with(['meetingDetails'])->get()->map(function ($e, $i) {
             $temp = $e['meetingDetails']->whereIn('status', ['pending', 'completed'])->sortByDesc("created_at")->first();
             $meetingDetailCount = $e['meetingDetails']->count();
             return [
@@ -157,7 +157,7 @@ class AllocationController extends Controller
         $student = Student::where('id', $student_id)->first();
         $tutor_id = Arranging::where('student_id',$student_id)->first()->tutor_id;
 
-        $sample_output = Arranging::where('student_id', $student_id)->where('tutor_id', $tutor_id)->with(['meetingDetails'])->get()->map(function ($e, $i) {
+        $sample_output = Arranging::where('student_id', $student_id)->where('tutor_id', $tutor_id)->has("meetingDetails")->with(['meetingDetails'])->get()->map(function ($e, $i) {
             $temp = $e['meetingDetails']->whereIn('status', ['pending', 'cancelled', 'completed'])->sortByDesc("created_at")->first();
             $meetingDetailCount = $e['meetingDetails']->count();
             return [
