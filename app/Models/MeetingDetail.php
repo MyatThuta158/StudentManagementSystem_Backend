@@ -32,4 +32,9 @@ class MeetingDetail extends Model
     {
         return $this->belongsTo(Arranging::class, 'arrange_id');
     }
+
+    public function meetingRecords()
+    {
+        return $this->hasMany(MeetingRecord::class, 'meeting_detail_id');
+    }
 }
