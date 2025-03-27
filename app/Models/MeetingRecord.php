@@ -11,14 +11,15 @@ class MeetingRecord extends Model
 
     protected $table    = 'meeting_record';
     protected $fillable = [
-        'arrange_id',
+        'meeting_detail_id',
         'meeting_note',
         'uploaded_document',
     ];
 
     // Relationships
-    public function arranging()
+    public function meetingDetail()
     {
-        return $this->belongsTo(Arranging::class, 'arrange_id');
+        return $this->belongsTo(MeetingDetail::class, 'meeting_detail_id');
     }
+
 }
