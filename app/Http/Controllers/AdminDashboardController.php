@@ -21,10 +21,12 @@ class AdminDashboardController
         })->count();
         $most_used_browsers = LoginLog::groupBy('browser')->where('browser' ,"<>","0")->get(['browser', DB::raw("COUNT(ip_address)")]);
         $now = Carbon::now();
-        $start_of_week = $now->startOfWeek();
-        $end_of_week = $now->endOfWeek();
-        $most_active_users = Blog::groupBy('id','author')->with('students')->whereBetween(DB::raw("DATE(created_at)"),[$start_of_week,$end_of_week])->get(["*",DB::raw("Count(author)")]);
-        $most_active_users = Student::withCount(['blogs','comments'])->whereBetween(DB::raw("DATE(created_at)"),[$start_of_week,$end_of_week])->groupBy("id")->get();
+        $start_of_week = $now->subMonths(1);
+        $most_active_users = Student::withCount(['blogs'=>function($query) use ($start_of_week){
+            $query->where('created_at',">=",$start_of_week);
+        },'comments'=>function($query) use ($start_of_week){
+            $query->where('created_at',">=",$start_of_week);
+        }])->where(DB::raw("DATE(created_at)"),">=",$start_of_week)->groupBy("id")->get();
         $most_active_users = $most_active_users->map(function($p){
             $counts= $p->blogs_count+$p->comments_count;
             $p['count'] = $counts;
