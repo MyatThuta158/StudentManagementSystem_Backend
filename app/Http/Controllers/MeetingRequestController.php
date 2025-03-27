@@ -137,32 +137,38 @@ class MeetingRequestController extends Controller
     {
         $tutor_id = auth()->user()->id;
 
-        $sample_output = Arranging::where('tutor_id', $tutor_id)->has("meetingRequests")->with(['meetingDetails', 'meetingRequests', 'student'])->where('status', 'pending')->get();
+        $sample_output = Arranging::where('tutor_id', $tutor_id)->whereHas('meetingRequests' , function($query){
+            $query->whereIn('status', ['pending']);
+        })->with(['meetingDetails', 'meetingRequests', 'student'])->where('status', 'pending')->get();
 
         $sample_output = $sample_output->map(function ($e, $i)  {
             $temp = $e['meetingDetails']->whereIn('status', ['pending'])->sortByDesc("created_at")->first();
             $tempRequest = $e['meetingRequests']->whereIn('status', ['pending'])->sortByDesc("created_at")->first();
-            $meetingDetailCount = $e['meetingDetails']->count();
-            return [
-                "id" => $e['id'],
-                "title" => $temp['topic'],
-                "student_name" => $e->student['name'],
-                "email" => $e->student['email'],
-                "org_date" => Carbon::parse($temp['arrange_date']),
-                "org_time" => Carbon::parse($temp['arrange_date']),
-                "org_meeting_type" => $temp['meeting_type'],
-                "org_meeting_app" => $temp['online_meeting_application_type'],
-                "org_meeting_link" => $temp['meeting_link'],
-                "org_location" => $temp['location'],
-                "new_date" => Carbon::parse($tempRequest['arrange_date']),
-                "new_time" => Carbon::parse($tempRequest['arrange_date']),
-                "new_meeting_type" => $tempRequest['meeting_type'],
-                "new_meeting_app" => $tempRequest['online_meeting_applicaiton'],
-                "new_location" => $tempRequest['location'],
-                "reason" => $tempRequest['reason'],
-                "status" => $meetingDetailCount > 1 ? "rescheduled" : ($e['status'] == "pending" ? "upcomming" : $e['status']),
-                "filter_status" => Carbon::parse($temp['arrange_date'])->tz("UTC") > Carbon::now("UTC") ? "upcoming" : "pastdue"
-            ];
+            dump($tempRequest);
+            if($tempRequest != null){
+                $meetingDetailCount = $e['meetingDetails']->count();
+                return [
+                    "id" => $e['id'],
+                    "title" => $temp['topic'],
+                    "student_name" => $e->student['name'],
+                    "email" => $e->student['email'],
+                    "org_date" => Carbon::parse($temp['arrange_date']),
+                    "org_time" => Carbon::parse($temp['arrange_date']),
+                    "org_meeting_type" => $temp['meeting_type'],
+                    "org_meeting_app" => $temp['online_meeting_application_type'],
+                    "org_meeting_link" => $temp['meeting_link'],
+                    "org_location" => $temp['location'],
+                    "new_date" => Carbon::parse($tempRequest['arrange_date']),
+                    "new_time" => Carbon::parse($tempRequest['arrange_date']),
+                    "new_meeting_type" => $tempRequest['meeting_type'],
+                    "new_meeting_app" => $tempRequest['online_meeting_applicaiton'],
+                    "new_location" => $tempRequest['location'],
+                    "reason" => $tempRequest['reason'],
+                    "status" => $meetingDetailCount > 1 ? "rescheduled" : ($e['status'] == "pending" ? "upcomming" : $e['status']),
+                    "filter_status" => Carbon::parse($temp['arrange_date'])->tz("UTC") > Carbon::now("UTC") ? "upcoming" : "pastdue"
+                ];
+            }
+            
         });
         return response()->json(ResponseModel::Ok($sample_output, '', "Meeting Request Successfully fetched"));
     }
