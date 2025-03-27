@@ -144,7 +144,6 @@ class MeetingRequestController extends Controller
         $sample_output = $sample_output->map(function ($e, $i)  {
             $temp = $e['meetingDetails']->whereIn('status', ['pending'])->sortByDesc("created_at")->first();
             $tempRequest = $e['meetingRequests']->whereIn('status', ['pending'])->sortByDesc("created_at")->first();
-            dump($tempRequest);
             if($tempRequest != null){
                 $meetingDetailCount = $e['meetingDetails']->count();
                 return [
