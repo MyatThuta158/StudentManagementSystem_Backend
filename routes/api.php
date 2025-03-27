@@ -7,6 +7,7 @@ use App\Http\Controllers\ArrangingController;
 use App\Http\Controllers\BulkAllocationController;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\MeetingRequestController;
+use App\Http\Controllers\StudentController;
 use App\Http\Controllers\StudentDashboardController;
 use App\Http\Controllers\TutorController;
 use App\Http\Controllers\TutorDashboardController;
@@ -85,6 +86,7 @@ Route::middleware('auth:sanctum')->group(function () {
 Route::middleware('auth:sanctum')->group(function () {
     // tutorlist
     Route::get('/tutors', [TutorController::class, 'tutorList']);
+    Route::get('/students', [StudentController::class, 'getAllStudents']);
 });
 
 // Arranging Routes (Students Only)
