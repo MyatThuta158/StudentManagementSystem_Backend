@@ -12,13 +12,18 @@ class AllocationSeeder extends Seeder
      */
     public function run(): void
     {
+        // Remove all existing allocation records
         Allocation::truncate();
-        Allocation::create([
-            "student_id"      => 2,
-            "tutor_id"        => 1,
-            "staff_id"        => 1,
-            "allocated_by"    => "Kyawe",
-            "allocation_date" => Carbon::now('UTC')->toDateString(),
-        ]);
+
+        // Loop from student_id 2 up to 20 (inclusive)
+        for ($studentId = 2; $studentId <= 20; $studentId++) {
+            Allocation::create([
+                'student_id'      => $studentId,
+                'tutor_id'        => 1,
+                'staff_id'        => 1,
+                'allocated_by'    => 'Kyawe',
+                'allocation_date' => Carbon::now('UTC')->toDateString(),
+            ]);
+        }
     }
 }
