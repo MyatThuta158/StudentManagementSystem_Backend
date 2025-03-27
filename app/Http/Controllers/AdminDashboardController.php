@@ -19,7 +19,7 @@ class AdminDashboardController
         $total_unassigned_students = Student::whereNotIn('id', function ($query) {
             $query->select('student_id')->from('allocations');
         })->count();
-        $most_used_browsers = LoginLog::groupBy('browser')->get(['browser', DB::raw("COUNT(ip_address)")]);
+        $most_used_browsers = LoginLog::groupBy('browser')->where('browser' ,"<>","0")->get(['browser', DB::raw("COUNT(ip_address)")]);
         $now = Carbon::now();
         $start_of_week = $now->startOfWeek();
         $end_of_week = $now->endOfWeek();
