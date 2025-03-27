@@ -98,3 +98,5 @@ Route::middleware('auth:sanctum')->group(function () {
 
 // tutor dashboard
 Route::middleware('auth:sanctum')->get('/tutor/dashboard', [TutorDashboardController::class, 'index']);
+Route::middleware('auth:sanctum')->get('/admin/tutor/dashboard/{id}', [TutorDashboardController::class, 'tutorDashboard']);
+Route::middleware('auth:sanctum')->get('/admin/student/dashboard/{id}', [StudentDashboardController::class, 'getStudentDashboardData']);
