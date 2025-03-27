@@ -32,16 +32,18 @@ class AdminDashboardController
             $p['count'] = $counts;
             return $p;
         })->sortByDesc('count')->take(10)->values();
+        $avaliable_teacher = Tutor::has('allocations','<=',30)->withCount(['allocations'])->get(); 
+        $avaliable_teacher = $avaliable_teacher->sortByDesc('allocations_count')->values();
 
-        $student = auth()->user();
+        $staff = auth()->user();
 
         // Prepare the user information.
         $userInfo = [
-            'name'          => $student->name,
-            'email'         => $student->email,
-            'last_login_at' => $student->last_login_at,
+            'name'          => $staff->name,
+            'email'         => $staff->email,
+            'last_login_at' => $staff->last_login_at,
         ];
 
-        return response()->json(ResponseModel::Ok(["userInfo" => $userInfo,"total_students" => $total_students, "total_tutors" => $total_tutors, "total_unassigned_students" => $total_unassigned_students, "browsers" => $most_used_browsers, "active_users" => $most_active_users], "", "dashboard fetched successfully"));
+        return response()->json(ResponseModel::Ok(["userInfo" => $userInfo,"total_students" => $total_students, "total_tutors" => $total_tutors, "total_unassigned_students" => $total_unassigned_students, "browsers" => $most_used_browsers, "active_users" => $most_active_users , 'avaliable_teacher'=> $avaliable_teacher], "", "dashboard fetched successfully"));
     }
 }
