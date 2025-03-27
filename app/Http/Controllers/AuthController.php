@@ -38,7 +38,7 @@ class AuthController extends Controller
                 \App\Models\LoginLog::create([
                     'userable_id'   => $admin->id,
                     'userable_type' => get_class($admin),
-                    'browser'       => $browserName,
+                    'browser'       => $browserName == false ? "Others":$browserName,
                     'ip_address'    => $request->ip(),
                 ]);
 
