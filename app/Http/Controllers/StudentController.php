@@ -18,6 +18,13 @@ class StudentController extends Controller
         return response()->json([ "data"=>$students]);
     }
 
+    public function getAllStudents()
+    {
+        $students = Student::orderBy('id')->get();
+
+        return response()->json([ "data"=>$students]);
+    }
+
     public function search(Request $request)
     {
         $searchTerm = $request->input('query');
