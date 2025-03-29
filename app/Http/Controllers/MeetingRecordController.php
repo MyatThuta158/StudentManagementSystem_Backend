@@ -28,7 +28,7 @@ class MeetingRecordController extends Controller
         // Validate the request data.
         $validatedData = $request->validate([
             'meeting_detail_id' => 'required|integer|exists:meeting_detail,id',
-            'meeting_note'      => 'required|string',
+            'meeting_note'      => 'nullable|string',
             'uploaded_document' => 'nullable|file',
         ]);
 

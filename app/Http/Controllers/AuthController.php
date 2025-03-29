@@ -35,10 +35,11 @@ class AuthController extends Controller
                 $admin->last_login_at = now();
                 $admin->save();
 
+                //dd($browserName);
                 \App\Models\LoginLog::create([
                     'userable_id'   => $admin->id,
                     'userable_type' => get_class($admin),
-                    'browser'       => $browserName == false ? "Others":$browserName,
+                    'browser'       => $browserName == false ? "Others" : $browserName,
                     'ip_address'    => $request->ip(),
                 ]);
 
@@ -64,7 +65,7 @@ class AuthController extends Controller
                 \App\Models\LoginLog::create([
                     'userable_id'   => $tutor->id,
                     'userable_type' => get_class($tutor),
-                    'browser'       => $browserName,
+                    'browser'       => $browserName == false ? "Others" : $browserName,
                     'ip_address'    => $request->ip(),
                 ]);
 
@@ -90,7 +91,7 @@ class AuthController extends Controller
                 \App\Models\LoginLog::create([
                     'userable_id'   => $student->id,
                     'userable_type' => get_class($student),
-                    'browser'       => $browserName,
+                    'browser'       => $browserName == false ? "Others" : $browserName,
                     'ip_address'    => $request->ip(),
                 ]);
 

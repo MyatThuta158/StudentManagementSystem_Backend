@@ -35,8 +35,5 @@ class Arranging extends Model
         return $this->hasMany(MeetingRequest::class, 'approved_arrange_id');
     }
 
-    public function meetingRecords()
-    {
-        return $this->hasMany(MeetingRecord::class, 'arrange_id');
-    }
+    
 }
