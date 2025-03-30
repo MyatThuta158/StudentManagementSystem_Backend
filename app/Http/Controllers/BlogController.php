@@ -27,17 +27,16 @@ class BlogController extends Controller
      */
     public function store(Request $request)
     {
-        // Clear any previous output.
+
         ob_clean();
         $user = Auth::user();
 
-        // Only tutors and students can create blogs.
         if (! $user || ! $user->can('manage blog')) {
             return response()->json(['error' => 'Only tutors and students can create blogs.'], 403);
         }
 
         try {
-            // Validate blog data and an optional array of document files.
+
             $validatedData = $request->validate([
                 'title'       => 'required|string|max:255',
                 'content'     => 'required',
@@ -45,7 +44,6 @@ class BlogController extends Controller
                 'documents.*' => 'file|mimes:pdf,doc,docx,txt',
             ]);
 
-            //  dd($validatedData['documents']);
         } catch (ValidationException $e) {
             return response()->json([
                 'errors'  => $e->errors(),
@@ -53,7 +51,6 @@ class BlogController extends Controller
             ], 422);
         }
 
-        // Determine allocation and set foreign keys/author details based on the user's role.
         if ($user->hasRole('student')) {
             $allocation = Allocation::where('student_id', $user->id)->first();
             if (! $allocation) {
@@ -76,18 +73,16 @@ class BlogController extends Controller
             return response()->json(['error' => 'Only tutors and students can create blogs.'], 403);
         }
 
-        // Use a DB transaction to ensure all-or-nothing saving.
         DB::beginTransaction();
         try {
-            // Create the blog record.
+
             $blog = Blog::create($validatedData);
 
-            // Handle multiple document uploads if provided.
             if ($request->hasFile('documents')) {
                 foreach ($request->file('documents') as $document) {
-                    // Store the document file using Laravel's storage.
+
                     $path = $document->store('documents', 'public');
-                    // Create a BlogDocument record linking the file to the blog.
+
                     BlogDocument::create([
                         'blog_id'          => $blog->id,
                         'BlogDocumentFile' => $path,
@@ -123,6 +118,7 @@ class BlogController extends Controller
      */
     public function update(Request $request, string $id)
     {
+
         ob_clean();
         $user = Auth::user();
 
@@ -131,56 +127,60 @@ class BlogController extends Controller
         }
 
         $blog = Blog::find($id);
+
         if (! $blog) {
             return response()->json(['error' => 'Blog not found.'], 404);
         }
 
+        if ($user->hasRole('student') && $blog->student_id !== $user->id) {
+            return response()->json(['error' => 'You are not allowed to update this blog.'], 403);
+        }
+        if ($user->hasRole('tutor') && $blog->tutor_id !== $user->id) {
+            return response()->json(['error' => 'You are not allowed to update this blog.'], 403);
+        }
+
         try {
-            // Validate incoming blog fields and an optional array of new document files.
+
             $validatedData = $request->validate([
                 'title'       => 'sometimes|required|string|max:255',
                 'content'     => 'sometimes|required',
-                'documents.*' => 'nullable|file|mimes:pdf,doc,docx,txt',
+                'documents'   => 'nullable|array',
+                'documents.*' => 'file|mimes:pdf,doc,docx,txt',
             ]);
         } catch (ValidationException $e) {
             return response()->json(['errors' => $e->errors()], 422);
         }
 
-        // Set allocation and author details based on the user's role.
-        if ($user->hasRole('student')) {
-            $allocation = Allocation::where('student_id', $user->id)->first();
-            if (! $allocation) {
-                return response()->json(['error' => 'No allocation found for this student.'], 404);
-            }
-            $validatedData['student_id']  = $user->id;
-            $validatedData['tutor_id']    = $allocation->tutor_id;
-            $validatedData['author']      = $user->name;
-            $validatedData['author_role'] = 'student';
-        } elseif ($user->hasRole('tutor')) {
-            $allocation = Allocation::where('tutor_id', $user->id)->first();
-            if (! $allocation) {
-                return response()->json(['error' => 'No allocation found for this tutor.'], 404);
-            }
-            $validatedData['tutor_id']    = $user->id;
-            $validatedData['student_id']  = $allocation->student_id;
-            $validatedData['author']      = $user->name;
-            $validatedData['author_role'] = 'tutor';
-        } else {
-            return response()->json(['error' => 'Only tutors and students can update blogs.'], 403);
-        }
+        DB::beginTransaction();
+        try {
 
-        // Update the blog record with the validated data.
-        $blog->update($validatedData);
+            $result = $blog->update($validatedData);
 
-        // If new documents are provided, add them without removing the existing ones.
-        if ($request->hasFile('documents')) {
-            foreach ($request->file('documents') as $document) {
-                $path = $document->store('blog_documents', 'public');
-                BlogDocument::create([
-                    'blog_id'          => $blog->id,
-                    'BlogDocumentFile' => $path,
-                ]);
+            if ($result) {
+
+                if ($request->hasFile('documents')) {
+
+                    foreach ($blog->documents as $existingDocument) {
+                        Storage::disk('public')->delete($existingDocument->BlogDocumentFile);
+                        $existingDocument->delete();
+                    }
+
+                    foreach ($request->file('documents') as $document) {
+                        $path = $document->store('documents', 'public');
+
+                        BlogDocument::create([
+                            'blog_id'          => $blog->id,
+                            'BlogDocumentFile' => $path,
+                        ]);
+                    }
+                }
+
             }
+
+            DB::commit();
+        } catch (\Exception $e) {
+            DB::rollback();
+            return response()->json(['error' => 'Error updating blog: ' . $e->getMessage()], 500);
         }
 
         return response()->json(['message' => 'Blog updated successfully!'], 200);
