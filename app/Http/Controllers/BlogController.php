@@ -189,30 +189,46 @@ class BlogController extends Controller
     /**
      * Remove the specified blog and its documents from storage.
      */
-    public function destroy(string $id)
+    public function destroy(Request $request, string $id)
     {
+        ob_clean();
         $user = Auth::user();
 
         if (! $user || ! $user->can('manage blog')) {
             return response()->json(['error' => 'Only tutors and students can delete blogs.'], 403);
         }
 
-        $blog = Blog::with('documents')->find($id);
+        $blog = Blog::find($id);
         if (! $blog) {
             return response()->json(['error' => 'Blog not found.'], 404);
         }
 
-        // Delete each associated document file and its record.
-        foreach ($blog->documents as $document) {
-            if ($document->BlogDocumentFile) {
-                Storage::disk('public')->delete($document->BlogDocumentFile);
-            }
-            $document->delete();
+        if ($user->hasRole('student') && $blog->student_id !== $user->id) {
+            return response()->json(['error' => 'You are not allowed to delete this blog.'], 403);
+        }
+        if ($user->hasRole('tutor') && $blog->tutor_id !== $user->id) {
+            return response()->json(['error' => 'You are not allowed to delete this blog.'], 403);
         }
 
-        // Finally, delete the blog.
-        $blog->delete();
+        DB::beginTransaction();
+        try {
 
-        return response()->json(['message' => 'Blog deleted successfully.'], 200);
+            foreach ($blog->documents as $document) {
+                Storage::disk('public')->delete($document->BlogDocumentFile);
+                $document->delete();
+            }
+
+            $result = $blog->delete();
+
+            //dd($result);
+
+            DB::commit();
+        } catch (\Exception $e) {
+            DB::rollback();
+            return response()->json(['error' => 'Error deleting blog: ' . $e->getMessage()], 500);
+        }
+
+        return response()->json(['message' => 'Blog deleted successfully!'], 200);
     }
+
 }
