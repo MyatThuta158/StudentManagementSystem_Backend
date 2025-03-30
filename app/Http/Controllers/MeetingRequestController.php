@@ -147,7 +147,8 @@ class MeetingRequestController extends Controller
             if($tempRequest != null){
                 $meetingDetailCount = $e['meetingDetails']->count();
                 return [
-                    "id" => $e['id'],
+                    "arrange_id"=>$e['id'],
+                    "id" => $tempRequest['id'],
                     "title" => $temp['topic'],
                     "student_name" => $e->student['name'],
                     "email" => $e->student['email'],
