@@ -16,10 +16,10 @@ class AllocationSeeder extends Seeder
         Allocation::truncate();
 
         // Loop from student_id 2 up to 20 (inclusive)
-        for ($studentId = 2; $studentId <= 20; $studentId++) {
+        for ($studentId = 31; $studentId <= 40; $studentId++) {
             Allocation::create([
                 'student_id'      => $studentId,
-                'tutor_id'        => 1,
+                'tutor_id'        => 2,
                 'staff_id'        => 1,
                 'allocated_by'    => 'Kyawe',
                 'allocation_date' => Carbon::now('UTC')->toDateString(),

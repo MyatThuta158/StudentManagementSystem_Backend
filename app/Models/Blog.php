@@ -13,7 +13,6 @@ class Blog extends Model
         'content',
         'tutor_id',
         'student_id',
-        'DocumentFile',
     ];
 
     /**
@@ -32,8 +31,19 @@ class Blog extends Model
         return $this->belongsTo(Student::class, 'student_id');
     }
 
+    /**
+     * Get the comments for the blog.
+     */
     public function comments()
     {
         return $this->hasMany(Comments::class);
+    }
+
+    /**
+     * Get the documents associated with the blog.
+     */
+    public function documents()
+    {
+        return $this->hasMany(BlogDocument::class, 'blog_id');
     }
 }
