@@ -163,7 +163,7 @@ class AllocationController extends Controller
         $sample_output = Arranging::where('student_id', $student_id)->where('tutor_id', $tutor_id)->has("meetingDetails")->with(['meetingDetails'])->get()->map(function ($e, $i) {
             $temp = $e['meetingDetails']->whereIn('status', ['pending', 'cancelled', 'completed'])->sortByDesc("created_at")->first();
             $meetingDetailCount = $e['meetingDetails']->count();
-            $meetingRecord = array_key_exists('meetingRecords', $temp) ? $temp['meetingRecords']->first() : null;
+            $meetingRecord = isset($temp->meetingRecords) ? $temp['meetingRecords']->first() : null;
 
             return [
                 "meeting_detail_id" => $temp['id'],
