@@ -120,10 +120,12 @@ class AllocationController extends Controller
         $tutor_id = auth()->user()->id;
         $student = Student::where('id', $student_id)->first();
 
-        $sample_output = Arranging::where('student_id', $student_id)->where('tutor_id', $tutor_id)->has("meetingDetails")->with(['meetingDetails'])->get()->map(function ($e, $i) {
+        $sample_output = Arranging::where('student_id', $student_id)->where('tutor_id', $tutor_id)->has("meetingDetails")->with(['meetingDetails', 'meetingDetails.meetingRecords'])->get()->map(function ($e, $i) {
             $temp = $e['meetingDetails']->whereIn('status', ['pending', 'completed'])->sortByDesc("created_at")->first();
             $meetingDetailCount = $e['meetingDetails']->count();
+            $meetingRecord = isset($temp->meetingRecords) ? $temp['meetingRecords']->first() : null;
             return [
+                "meeting_detail_id" => $temp['id'],
                 "id" => $e['id'],
                 "title" => $temp['topic'],
                 "date" => $temp['arrange_date'],
@@ -131,10 +133,11 @@ class AllocationController extends Controller
                 "meeting_type" => $temp['meeting_type'],
                 "description" => $temp['description'],
                 "meeting_link" => $temp['meeting_link'],
-                "meeting_app"=>$temp['online_meeting_applicaiton_type'],
+                "meeting_app" => $temp['online_meeting_applicaiton_type'],
                 "location" => $temp['location'],
                 "status" => $meetingDetailCount > 1 ? "rescheduled" : ($e['status'] == "pending" ? "upcomming" : $e['status']),
-                "filter_status"=> Carbon::parse($temp['arrange_date'])->tz("UTC") > Carbon::now("UTC") ? "upcoming" : "pastdue"
+                "filter_status" => Carbon::parse($temp['arrange_date'])->tz("UTC") > Carbon::now("UTC") ? "upcoming" : "pastdue",
+                "meetingRecord" => $meetingRecord,
             ];
         });
 
@@ -144,7 +147,7 @@ class AllocationController extends Controller
             "id" => $student->id,
             "name" => $student->name,
             "email" => $student->email,
-            "student_id"=>$student->StudentID,
+            "student_id" => $student->StudentID,
             "meetings" => $sample_output
         ];
 
@@ -155,12 +158,15 @@ class AllocationController extends Controller
     {
         $student_id = auth()->user()->id;
         $student = Student::where('id', $student_id)->first();
-        $tutor_id = Arranging::where('student_id',$student_id)->first()->tutor_id;
+        $tutor_id = Arranging::where('student_id', $student_id)->first()->tutor_id;
 
         $sample_output = Arranging::where('student_id', $student_id)->where('tutor_id', $tutor_id)->has("meetingDetails")->with(['meetingDetails'])->get()->map(function ($e, $i) {
             $temp = $e['meetingDetails']->whereIn('status', ['pending', 'cancelled', 'completed'])->sortByDesc("created_at")->first();
             $meetingDetailCount = $e['meetingDetails']->count();
+            $meetingRecord = array_key_exists('meetingRecords', $temp) ? $temp['meetingRecords']->first() : null;
+
             return [
+                "meeting_detail_id" => $temp['id'],
                 "id" => $e['id'],
                 "title" => $temp['topic'],
                 "date" => Carbon::parse($temp['arrange_date']),
@@ -170,7 +176,8 @@ class AllocationController extends Controller
                 "meeting_link" => $temp['meeting_link'],
                 "location" => $temp['location'],
                 "status" => $meetingDetailCount > 1 ? "rescheduled" : ($e['status'] == "pending" ? "upcomming" : $e['status']),
-                "filter_status"=> Carbon::parse($temp['arrange_date'])->tz("UTC") > Carbon::now("UTC") ? "upcoming" : "pastdue"
+                "filter_status" => Carbon::parse($temp['arrange_date'])->tz("UTC") > Carbon::now("UTC") ? "upcoming" : "pastdue",
+                "meetingRecord"=> $meetingRecord
             ];
         });
 
@@ -180,7 +187,7 @@ class AllocationController extends Controller
             "id" => $student->id,
             "name" => $student->name,
             "email" => $student->email,
-            "student_id"=>$student->StudentID,
+            "student_id" => $student->StudentID,
             "meetings" => $sample_output
         ];
 
@@ -191,7 +198,7 @@ class AllocationController extends Controller
     {
         $tutor_id = auth()->user()->id;
         $student = Allocation::where('tutor_id', $tutor_id)->get();
-        $student=$student->map(function($e){
+        $student = $student->map(function ($e) {
             return $e['student'];
         });
 

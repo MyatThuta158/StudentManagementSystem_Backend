@@ -22,7 +22,14 @@ return new class extends Migration
                 ->onDelete('cascade');
             $table->string("feedback");
             $table->timestampTz('dead_line');
-            $table->enum("status",['canceled','accepted','finished','watched']);
+            $table->enum("status",[ 'pending', 
+            'accepted', 
+            'in_progress', 
+            'submitted', 
+            'reviewed', 
+            'finished', 
+            'canceled', 
+            'overdue']);
             $table->timestampsTz();
         });
     }
