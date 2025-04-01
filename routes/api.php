@@ -13,6 +13,7 @@ use App\Http\Controllers\TutorController;
 use App\Http\Controllers\TutorDashboardController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\FileDownloadController;
 
 Route::get('/user', function (Request $request) {
     return $request->user();
@@ -103,3 +104,8 @@ Route::middleware('auth:sanctum')->group(function () {
 Route::middleware('auth:sanctum')->get('/tutor/dashboard', [TutorDashboardController::class, 'index']);
 Route::middleware('auth:sanctum')->get('/admin/tutor/dashboard/{id}', [TutorDashboardController::class, 'tutorDashboard']);
 Route::middleware('auth:sanctum')->get('/admin/student/dashboard/{id}', [StudentDashboardController::class, 'getStudentDashboardData']);
+
+
+
+Route::get('/download/{type}/{id}', [FileDownloadController::class, 'download']);
+
