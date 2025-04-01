@@ -15,11 +15,18 @@ class BlogController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index($studentId)
     {
-        // Optionally, fetch blogs with their documents:
-        // $blogs = Blog::with('documents')->get();
-        // return response()->json($blogs, 200);
+        // Retrieve blogs for the specified student along with comments and documents
+        $blogs = Blog::with(['comments', 'documents'])
+            ->where('student_id', $studentId)
+            ->get();
+
+        if ($blogs->isEmpty()) {
+            return response()->json(['message' => 'No blogs found for this student.', 'status' => 404]);
+        }
+
+        return response()->json(['message' => $blogs, 'status' => 200], 200);
     }
 
     /**
