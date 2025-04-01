@@ -42,8 +42,9 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('student/nonallocate', [BulkAllocationController::class, 'nonAllocatedStudentList']);
     // end non-allocated student
 
-                                                                                           //Blog Routes start
-    Route::get('/blogs/{id}', [App\Http\Controllers\BlogController::class, 'index']);      //---Show single blog---//
+                                                                                      //Blog Routes start
+    Route::get('/blogs/{id}', [App\Http\Controllers\BlogController::class, 'index']); //---Show single blog---//
+    Route::get('/blogs/show/{id}', [App\Http\Controllers\BlogController::class, 'show']);
     Route::post('/blogs', [App\Http\Controllers\BlogController::class, 'store']);          ///--Blog Create---//
     Route::post('/blogs/{id}', [App\Http\Controllers\BlogController::class, 'update']);    //----Blog update---//
     Route::delete('/blogs/{id}', [App\Http\Controllers\BlogController::class, 'destroy']); ///----Blog delete---//
