@@ -15,11 +15,18 @@ class BlogController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index($studentId)
     {
-        // Optionally, fetch blogs with their documents:
-        // $blogs = Blog::with('documents')->get();
-        // return response()->json($blogs, 200);
+
+        $blogs = Blog::with(['comments', 'documents'])
+            ->where('student_id', $studentId)
+            ->get();
+
+        if ($blogs->isEmpty()) {
+            return response()->json(['message' => 'No blogs found for this student.', 'status' => 404]);
+        }
+
+        return response()->json(['data' => $blogs, 'status' => 200, 'message' => 'Blog fetch successfully'], 200);
     }
 
     /**
@@ -54,7 +61,7 @@ class BlogController extends Controller
         if ($user->hasRole('student')) {
             $allocation = Allocation::where('student_id', $user->id)->first();
             if (! $allocation) {
-                return response()->json(['error' => 'No allocation found for this student'], 404);
+                return response()->json(['error' => 'No allocation found for this student', 'status' => 404], 404);
             }
             $validatedData['student_id']  = $user->id;
             $validatedData['tutor_id']    = $allocation->tutor_id;
@@ -70,7 +77,7 @@ class BlogController extends Controller
             $validatedData['author']      = $user->name;
             $validatedData['author_role'] = 'tutor';
         } else {
-            return response()->json(['error' => 'Only tutors and students can create blogs.'], 403);
+            return response()->json(['error' => 'Only tutors and students can create blogs.', 'status' => 403], 403);
         }
 
         DB::beginTransaction();
@@ -93,10 +100,10 @@ class BlogController extends Controller
             DB::commit();
         } catch (\Exception $e) {
             DB::rollback();
-            return response()->json(['error' => 'Error saving blog: ' . $e->getMessage()], 500);
+            return response()->json(['error' => 'Error saving blog: ' . $e->getMessage(), 'status' => 500], 500);
         }
 
-        return response()->json(['message' => 'Blog and documents saved successfully!'], 201);
+        return response()->json(['message' => 'Blog and documents saved successfully!', 'status' => 201], 201);
     }
 
     /**
@@ -104,13 +111,14 @@ class BlogController extends Controller
      */
     public function show(string $id)
     {
-        $blog = Blog::with('documents')->find($id);
+        // Retrieve the blog along with its related documents and comments
+        $blog = Blog::with(['documents', 'comments'])->find($id);
 
         if (! $blog) {
-            return response()->json(['error' => 'Blog not found.'], 404);
+            return response()->json(['error' => 'Blog not found.', 'status' => 404], 404);
         }
 
-        return response()->json($blog, 200);
+        return response()->json(['data' => $blog, 'status' => 200, 'message' => 'Blog fetch successfully'], 200);
     }
 
     /**
@@ -129,14 +137,14 @@ class BlogController extends Controller
         $blog = Blog::find($id);
 
         if (! $blog) {
-            return response()->json(['error' => 'Blog not found.'], 404);
+            return response()->json(['error' => 'Blog not found.', 'status' => 404], 404);
         }
 
         if ($user->hasRole('student') && $blog->student_id !== $user->id) {
-            return response()->json(['error' => 'You are not allowed to update this blog.'], 403);
+            return response()->json(['error' => 'You are not allowed to update this blog.', 'status' => 403], 403);
         }
         if ($user->hasRole('tutor') && $blog->tutor_id !== $user->id) {
-            return response()->json(['error' => 'You are not allowed to update this blog.'], 403);
+            return response()->json(['error' => 'You are not allowed to update this blog.', 'status' => 403], 403);
         }
 
         try {
@@ -148,7 +156,7 @@ class BlogController extends Controller
                 'documents.*' => 'file|mimes:pdf,doc,docx,txt',
             ]);
         } catch (ValidationException $e) {
-            return response()->json(['errors' => $e->errors()], 422);
+            return response()->json(['errors' => $e->errors(), 'status' => 422], 422);
         }
 
         DB::beginTransaction();
@@ -180,10 +188,10 @@ class BlogController extends Controller
             DB::commit();
         } catch (\Exception $e) {
             DB::rollback();
-            return response()->json(['error' => 'Error updating blog: ' . $e->getMessage()], 500);
+            return response()->json(['error' => 'Error updating blog: ' . $e->getMessage(), 'status' => 500], 500);
         }
 
-        return response()->json(['message' => 'Blog updated successfully!'], 200);
+        return response()->json(['message' => 'Blog updated successfully!', 'status' => 200], 200);
     }
 
     /**
@@ -195,19 +203,19 @@ class BlogController extends Controller
         $user = Auth::user();
 
         if (! $user || ! $user->can('manage blog')) {
-            return response()->json(['error' => 'Only tutors and students can delete blogs.'], 403);
+            return response()->json(['error' => 'Only tutors and students can delete blogs.', 'status' => 403], 403);
         }
 
         $blog = Blog::find($id);
         if (! $blog) {
-            return response()->json(['error' => 'Blog not found.'], 404);
+            return response()->json(['error' => 'Blog not found.', 'status' => 404], 404);
         }
 
         if ($user->hasRole('student') && $blog->student_id !== $user->id) {
-            return response()->json(['error' => 'You are not allowed to delete this blog.'], 403);
+            return response()->json(['error' => 'You are not allowed to delete this blog.', 'status' => 403], 403);
         }
         if ($user->hasRole('tutor') && $blog->tutor_id !== $user->id) {
-            return response()->json(['error' => 'You are not allowed to delete this blog.'], 403);
+            return response()->json(['error' => 'You are not allowed to delete this blog.', 'status' => 403], 403);
         }
 
         DB::beginTransaction();
@@ -225,10 +233,10 @@ class BlogController extends Controller
             DB::commit();
         } catch (\Exception $e) {
             DB::rollback();
-            return response()->json(['error' => 'Error deleting blog: ' . $e->getMessage()], 500);
+            return response()->json(['error' => 'Error deleting blog: ' . $e->getMessage(), 'status' => 500], 500);
         }
 
-        return response()->json(['message' => 'Blog deleted successfully!'], 200);
+        return response()->json(['message' => 'Blog deleted successfully!', 'status' => 200], 200);
     }
 
 }
