@@ -47,6 +47,7 @@ class AuthController extends Controller
                 $cookie = cookie('token', $token, 60 * 24); // 1 day
 
                 return response()->json([
+                    'user_id'     => $admin->id,
                     'message'     => 'Admin login successful!',
                     'token'       => $token,
                     'role'        => 'admin',
@@ -73,6 +74,7 @@ class AuthController extends Controller
                 $cookie = cookie('token', $token, 60 * 24); // 1 day
 
                 return response()->json([
+                    'user_id'     => $tutor->id,
                     'message'     => 'Tutor login successful!',
                     'token'       => $token,
                     'role'        => 'tutor',
@@ -99,6 +101,7 @@ class AuthController extends Controller
                 $cookie = cookie('token', $token, 60 * 24); // 1 day
 
                 return response()->json([
+                    'user_id'     => $student->id,
                     'message'     => 'Student login successful!',
                     'token'       => $token,
                     'role'        => 'student',
