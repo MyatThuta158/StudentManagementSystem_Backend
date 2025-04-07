@@ -106,5 +106,7 @@ Route::middleware('auth:sanctum')->get('/admin/tutor/dashboard/{id}', [TutorDash
 Route::middleware('auth:sanctum')->get('/admin/student/dashboard/{id}', [StudentDashboardController::class, 'getStudentDashboardData']);
 
 
+
+
 Route::get('/download/{type}/{id}', [FileDownloadController::class, 'download']);
 
