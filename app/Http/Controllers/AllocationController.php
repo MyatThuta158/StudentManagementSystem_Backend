@@ -60,8 +60,8 @@ class AllocationController extends Controller
             'student_id' => $request->student_id,
         ]);
 
-        $student = Student::where("id", $i['student_id'])->first();
-        $tutor = Tutor::where("id", $i['tutor_id'])->first();
+        $student = Student::where("id", $allocation['student_id'])->first();
+        $tutor = Tutor::where("id", $allocation['tutor_id'])->first();
         $student_job = new SendEmailNotification(new AllocatedStudent($student, $tutor), $student);
         $tutor_job = new SendEmailNotification(new AllocatedTutor($student, $tutor), $tutor);
 
