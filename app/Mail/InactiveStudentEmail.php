@@ -3,7 +3,7 @@
 namespace App\Mail;
 
 use App\Models\Student;
-use App\Models\Tutor;
+use Config;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
@@ -11,14 +11,14 @@ use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
 
-class ReallocationMailStudent extends Mailable
+class InactiveStudentEmail extends Mailable
 {
     use Queueable, SerializesModels;
 
     /**
      * Create a new message instance.
      */
-    public function __construct(private Student $student, private Tutor $tutor)
+    public function __construct(private Student $student)
     {
         //
     }
@@ -29,8 +29,7 @@ class ReallocationMailStudent extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            env("MAIL_FROM_ADDRESS", ""),
-            subject: 'Reallocation Notification',
+            subject: 'Inactive Student Email',
         );
     }
 
@@ -40,10 +39,11 @@ class ReallocationMailStudent extends Mailable
     public function content(): Content
     {
         return new Content(
-            view: 'email.reallocation_student',
+            view: 'view.email.inactive_student',
             with: [
-                "tutor_name" => $this->tutor->name,
-                "url" => config('FRONT_END_URL')
+                'user_name'=> $this->student->name,
+                'tutoring_system_name' => config("APP_NAME"),
+                "login_url" => config("FRONT_END_URL")."/login"
             ]
         );
     }

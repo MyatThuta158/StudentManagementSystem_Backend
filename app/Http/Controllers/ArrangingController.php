@@ -2,7 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Jobs\SendEmailNotification;
+use App\Mail\MeetingCancelMail;
+use App\Mail\MeetingCreateMail;
 use App\Models\Arranging;
+use App\Models\Student;
+use App\Models\Tutor;
+use App\Notifications\AllocatedStudent;
 use Illuminate\Http\Request;
 use App\Models\MeetingDetail;
 use Illuminate\Support\Facades\Auth;
@@ -102,6 +108,14 @@ class ArrangingController extends Controller
             'status' => 'pending',
         ]);
 
+        $student = Student::where("id", $arranging['student_id'])->first();
+        $tutor = Tutor::where("id", $arranging['tutor_id'])->first();
+        $student_job = new SendEmailNotification(new MeetingCreateMail($student, $tutor), $student);
+        $tutor_job = new SendEmailNotification(new MeetingCreateMail($student, $tutor), $tutor);
+
+        dispatch($student_job);
+        dispatch($tutor_job);
+
         return response()->json([
             'message' => 'Meeting scheduled successfully!',
             'arranging' => $arranging,
@@ -193,6 +207,14 @@ class ArrangingController extends Controller
         // Ensure related meeting details are also deleted
         MeetingDetail::where('arrange_id', $id)->delete();
         $arranging->delete();
+
+        $student = Student::where("id", $arranging['student_id'])->first();
+        $tutor = Tutor::where("id", $arranging['tutor_id'])->first();
+        $student_job = new SendEmailNotification(new MeetingCancelMail($student, $tutor), $student);
+        $tutor_job = new SendEmailNotification(new MeetingCancelMail($student, $tutor), $tutor);
+
+        dispatch($student_job);
+        dispatch($tutor_job);
 
         return response()->json(['message' => 'Arrangement deleted successfully'], 200);
     }

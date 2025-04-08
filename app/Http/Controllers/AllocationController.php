@@ -2,9 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Jobs\SendEmailNotification;
 use App\Models\Allocation;
 use App\Models\Arranging;
 use App\Models\Student;
+use App\Models\Tutor;
+use App\Notifications\AllocatedStudent;
+use App\Notifications\AllocatedTutor;
 use App\ResponseModel\ResponseModel;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -55,6 +59,14 @@ class AllocationController extends Controller
             'tutor_id' => $request->tutor_id,
             'student_id' => $request->student_id,
         ]);
+
+        $student = Student::where("id", $allocation['student_id'])->first();
+        $tutor = Tutor::where("id", $allocation['tutor_id'])->first();
+        $student_job = new SendEmailNotification(new AllocatedStudent($student, $tutor), $student);
+        $tutor_job = new SendEmailNotification(new AllocatedTutor($student, $tutor), $tutor);
+
+        dispatch($student_job);
+        dispatch($tutor_job);
 
         Log::info("Allocation Created Successfully", ['allocation' => $allocation]);
 
@@ -163,7 +175,7 @@ class AllocationController extends Controller
         $sample_output = Arranging::where('student_id', $student_id)->where('tutor_id', $tutor_id)->has("meetingDetails")->with(['meetingDetails'])->get()->map(function ($e, $i) {
             $temp = $e['meetingDetails']->whereIn('status', ['pending', 'cancelled', 'completed'])->sortByDesc("created_at")->first();
             $meetingDetailCount = $e['meetingDetails']->count();
-            $meetingRecord = array_key_exists('meetingRecords', $temp) ? $temp['meetingRecords']->first() : null;
+            $meetingRecord = isset($temp->meetingRecords) ? $temp['meetingRecords']->first() : null;
 
             return [
                 "meeting_detail_id" => $temp['id'],
@@ -177,7 +189,7 @@ class AllocationController extends Controller
                 "location" => $temp['location'],
                 "status" => $meetingDetailCount > 1 ? "rescheduled" : ($e['status'] == "pending" ? "upcomming" : $e['status']),
                 "filter_status" => Carbon::parse($temp['arrange_date'])->tz("UTC") > Carbon::now("UTC") ? "upcoming" : "pastdue",
-                "meetingRecord"=> $meetingRecord
+                "meetingRecord" => $meetingRecord
             ];
         });
 
