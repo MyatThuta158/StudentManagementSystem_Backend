@@ -11,14 +11,14 @@ use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
 
-class ReallocationMailStudent extends Mailable
+class MeetingCreateMail extends Mailable
 {
     use Queueable, SerializesModels;
 
     /**
      * Create a new message instance.
      */
-    public function __construct(private Student $student, private Tutor $tutor)
+    public function __construct(private Student $student ,private Tutor $tutor)
     {
         //
     }
@@ -29,8 +29,7 @@ class ReallocationMailStudent extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            env("MAIL_FROM_ADDRESS", ""),
-            subject: 'Reallocation Notification',
+            subject: 'Meeting Create Mail',
         );
     }
 
@@ -40,10 +39,11 @@ class ReallocationMailStudent extends Mailable
     public function content(): Content
     {
         return new Content(
-            view: 'email.reallocation_student',
+            view: 'view.email.meeting_created_notification',
             with: [
-                "tutor_name" => $this->tutor->name,
-                "url" => config('FRONT_END_URL')
+                'TUTOR_EMAIL'=>$this->tutor->email,
+                'STUDENT_EMAIL'=>$this->student->email,
+                'INSTITUTION_NAME'=>config('APP_NAME')
             ]
         );
     }
