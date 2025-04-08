@@ -21,6 +21,7 @@ class DatabaseSeeder extends Seeder
             $this->call(StudentSeeder::class);
             $this->call(StaffSeeder::class);
             $this->call(AllocationSeeder::class);
+            $this->call(ArrangingSeeder::class);
             // $this->call(BlogSeeder::class); // ✅ Add BlogSeeder
 
             DB::commit();

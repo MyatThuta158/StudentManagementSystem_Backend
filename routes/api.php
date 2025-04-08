@@ -13,6 +13,8 @@ use App\Http\Controllers\TutorController;
 use App\Http\Controllers\TutorDashboardController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\FileDownloadController;
+use App\Http\Controllers\TutorReportController;
 
 Route::get('/user', function (Request $request) {
     return $request->user();
@@ -33,8 +35,8 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::get('/admin/dashboard', [AdminDashboardController::class, 'index']);
 
-    Route::get('/meetinglist/student',[AllocationController::class,'ListSearchStudent']);
-    Route::get('/meetinglist/{id}',[AllocationController::class,'ListSearch']);
+    Route::get('/meetinglist/student', [AllocationController::class, 'ListSearchStudent']);
+    Route::get('/meetinglist/{id}', [AllocationController::class, 'ListSearch']);
 
     //allocation end
 
@@ -42,8 +44,9 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('student/nonallocate', [BulkAllocationController::class, 'nonAllocatedStudentList']);
     // end non-allocated student
 
-                                                                                           //Blog Routes start
-    Route::get('/blogs/{id}', [App\Http\Controllers\BlogController::class, 'show']);       //---Show single blog---//
+                                                                                      //Blog Routes start
+    Route::get('/blogs/{id}', [App\Http\Controllers\BlogController::class, 'index']); //---Show single blog---//
+    Route::get('/blogs/show/{id}', [App\Http\Controllers\BlogController::class, 'show']);
     Route::post('/blogs', [App\Http\Controllers\BlogController::class, 'store']);          ///--Blog Create---//
     Route::post('/blogs/{id}', [App\Http\Controllers\BlogController::class, 'update']);    //----Blog update---//
     Route::delete('/blogs/{id}', [App\Http\Controllers\BlogController::class, 'destroy']); ///----Blog delete---//
@@ -75,11 +78,11 @@ Route::middleware('auth:sanctum')->group(function () {
 });
 
 Route::middleware('auth:sanctum')->group(function () {
-    Route::get("/tutor/meetingrequest",[MeetingRequestController::class , 'meetingRequestList']);
-    Route::get('/meetingrequest/{arrange_id}', [MeetingRequestController::class, 'index']);           // List all comments
-    Route::post('/meetingrequest/{arrange_id}', [MeetingRequestController::class, 'create']);          // Add a comment
-    Route::put('/meetingrequest/cancel/{id}', [MeetingRequestController::class, 'cancelRequest']);     // Update a comment
-    Route::put('/meetingrequest/reject/{id}', [MeetingRequestController::class, 'rejectRequest']);       // Get a single comment
+    Route::get("/tutor/meetingrequest", [MeetingRequestController::class, 'meetingRequestList']);
+    Route::get('/meetingrequest/{arrange_id}', [MeetingRequestController::class, 'index']);          // List all comments
+    Route::post('/meetingrequest/{arrange_id}', [MeetingRequestController::class, 'create']);        // Add a comment
+    Route::put('/meetingrequest/cancel/{id}', [MeetingRequestController::class, 'cancelRequest']);   // Update a comment
+    Route::put('/meetingrequest/reject/{id}', [MeetingRequestController::class, 'rejectRequest']);   // Get a single comment
     Route::put('/meetingrequest/approve/{id}', [MeetingRequestController::class, 'approveRequest']); // Delete a comment
 });
 
@@ -101,4 +104,12 @@ Route::middleware('auth:sanctum')->group(function () {
 // tutor dashboard
 Route::middleware('auth:sanctum')->get('/tutor/dashboard', [TutorDashboardController::class, 'index']);
 Route::middleware('auth:sanctum')->get('/admin/tutor/dashboard/{id}', [TutorDashboardController::class, 'tutorDashboard']);
-Route::middleware('auth:sanctum')->get('/admin/student/dashboard/{id}', [StudentDashboardController::class, 'getStudentDashboardData']);
+Route::middleware('auth:sanctum')->get('/admin/student/dashboard/{id}',[StudentDashboardController::class, 'getStudentDashboardData']);
+
+
+
+
+Route::get('/download/{type}/{id}', [FileDownloadController::class, 'download']);
+
+Route::middleware(['auth:sanctum'])->get('tutor/report', [TutorReportController::class, 'report']);
+

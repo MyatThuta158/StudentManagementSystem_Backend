@@ -24,7 +24,7 @@ return new class extends Migration
             $table->string("topic");
             $table->enum("meeting_type",['online',"offline"]);
             $table->string("location")->nullable();
-            $table->string("rejcet_reason")->nullable();
+            $table->string("reject_reason")->nullable();
             $table->unsignedBigInteger("approved_arrange_id")->nullable();
             $table->foreign("approved_arrange_id")->references('id')->on('arrangings')->cascadeOnDelete();
             $table->timestampTz("approved_reject_date")->nullable();
