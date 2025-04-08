@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -12,15 +13,22 @@ class Student extends Authenticatable
     use HasFactory, Notifiable, HasApiTokens, HasRoles;
 
     protected $guard_name = 'api';
-    protected $table      = 'students';
+    protected $table = 'students';
 
-    protected $fillable = ['StudentID', 'name', 'email', 'password', 'phone_number', 'last_login_at'];
+    protected $fillable = [
+        'StudentID',
+        'name',
+        'email',
+        'password',
+        'phone_number',
+        'last_login_at',
+    ];
 
     protected $hidden = ['password', 'remember_token'];
 
     protected $casts = [
         'email_verified_at' => 'datetime',
-        'password'          => 'hashed',
+        'password' => 'hashed',
     ];
 
     public function allocations()
@@ -36,6 +44,11 @@ class Student extends Authenticatable
     public function blogs()
     {
         return $this->hasMany(Blog::class, 'student_id');
+    }
+
+    public function arrangings()
+    {
+        return $this->hasMany(Arranging::class, 'student_id');
     }
 
     public function loginLogs()
