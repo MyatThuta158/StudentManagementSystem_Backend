@@ -17,9 +17,9 @@ class BlogController extends Controller
      */
     public function index($studentId)
     {
-
         $blogs = Blog::with(['comments', 'documents'])
             ->where('student_id', $studentId)
+            ->orderBy('created_at', 'desc')
             ->get();
 
         if ($blogs->isEmpty()) {
