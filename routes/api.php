@@ -65,6 +65,9 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/student/dashboard', 'getDashboardData');
 
     });
+
+    ////-----This is for admin's dashboard----///
+    Route::get('/admin/report', [App\Http\Controllers\AdminReportController::class, 'AdminReport']);
 });
 
 Route::middleware('auth:sanctum')->group(function () {
