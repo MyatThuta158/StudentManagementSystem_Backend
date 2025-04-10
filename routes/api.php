@@ -67,6 +67,9 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/student/dashboard', 'getDashboardData');
 
     });
+
+    ////-----This is for admin's dashboard----///
+    Route::get('/admin/report', [App\Http\Controllers\AdminReportController::class, 'AdminReport']);
 });
 
 Route::middleware('auth:sanctum')->group(function () {
@@ -109,7 +112,12 @@ Route::middleware('auth:sanctum')->get('/admin/student/dashboard/{id}',[StudentD
 
 
 
+// Single file download by type/id
 Route::get('/download/{type}/{id}', [FileDownloadController::class, 'download']);
+
+// Download all general documents in ZIP
+Route::get('/download/blog/all/{blogId}', [FileDownloadController::class, 'downloadAllFilesForBlog']);
+
 
 Route::middleware(['auth:sanctum'])->get('tutor/report', [TutorReportController::class, 'report']);
 

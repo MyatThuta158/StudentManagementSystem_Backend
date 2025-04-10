@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\File;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 use App\Models\MeetingRecord;
@@ -45,5 +46,32 @@ class FileDownloadController extends Controller
             $name,
             ['Content-Type' => 'application/octet-stream']
         );
+    }
+
+    public function downloadAllFilesForBlog($blogId)
+    {
+        $documents = BlogDocument::where('blog_id', $blogId)->get();
+
+        if ($documents->isEmpty()) {
+            return response()->json(['message' => 'No documents found for this blog.'], 404);
+        }
+
+        $zipFileName = "blog_{$blogId}_attachments_" . now()->format('Ymd_His') . '.zip';
+        $zipPath = storage_path("app/public/{$zipFileName}");
+
+        $zip = new \ZipArchive;
+        if ($zip->open($zipPath, \ZipArchive::CREATE | \ZipArchive::OVERWRITE) === TRUE) {
+            foreach ($documents as $doc) {
+                $filePath = storage_path("app/public/" . $doc->BlogDocumentFile);
+                if (File::exists($filePath)) {
+                    $zip->addFile($filePath, basename($filePath));
+                }
+            }
+            $zip->close();
+        } else {
+            return response()->json(['message' => 'Failed to create ZIP file.'], 500);
+        }
+
+        return response()->download($zipPath)->deleteFileAfterSend(true);
     }
 }

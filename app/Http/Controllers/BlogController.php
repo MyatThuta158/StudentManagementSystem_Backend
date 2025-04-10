@@ -17,9 +17,9 @@ class BlogController extends Controller
      */
     public function index($studentId)
     {
-
         $blogs = Blog::with(['comments', 'documents'])
             ->where('student_id', $studentId)
+            ->orderBy('created_at', 'desc')
             ->get();
 
         if ($blogs->isEmpty()) {
@@ -46,6 +46,7 @@ class BlogController extends Controller
 
             $validatedData = $request->validate([
                 'title'       => 'required|string|max:255',
+                'student_id'  => 'nullable|integer',
                 'content'     => 'required',
                 'documents'   => 'nullable|array',
                 'documents.*' => 'file|mimes:pdf,doc,docx,txt',
@@ -63,17 +64,19 @@ class BlogController extends Controller
             if (! $allocation) {
                 return response()->json(['error' => 'No allocation found for this student', 'status' => 404], 404);
             }
+
+            //dd($allocation->tutor_id);
             $validatedData['student_id']  = $user->id;
             $validatedData['tutor_id']    = $allocation->tutor_id;
             $validatedData['author']      = $user->name;
             $validatedData['author_role'] = 'student';
         } elseif ($user->hasRole('tutor')) {
-            $allocation = Allocation::where('tutor_id', $user->id)->first();
-            if (! $allocation) {
-                return response()->json(['error' => 'No allocation found for this tutor'], 404);
-            }
-            $validatedData['tutor_id']    = $user->id;
-            $validatedData['student_id']  = $allocation->student_id;
+            // $allocation = Allocation::where('tutor_id', $user->id)->first();
+            // if (! $allocation) {
+            //     return response()->json(['error' => 'No allocation found for this tutor'], 404);
+            // }
+            $validatedData['tutor_id'] = $user->id;
+            //  $validatedData['student_id']  = $allocation->student_id;
             $validatedData['author']      = $user->name;
             $validatedData['author_role'] = 'tutor';
         } else {
