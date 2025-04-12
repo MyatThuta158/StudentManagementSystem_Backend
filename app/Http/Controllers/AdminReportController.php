@@ -137,16 +137,18 @@ public function AdminReport()
     }
 
     private function getAverageMessageToStudents(){
-        $blogs = Blog::withCount("comments")->get();
-        $blogs = $blogs->groupBy(["author","author_type"]);
+        $blogs = Blog::where("author_role",'tutor')->with("comments")->get();
+        $blogs = $blogs->groupBy(["author","author_role"]);
         $blogs = $blogs->map(function($e){
             $totalInteractions = 0;
-            $e->map(function($s) use ($totalInteractions){
-                $s->map(function($k) use ($totalInteractions){
-                    $totalInteractions += $k->comments_count;
+            $tutor = Tutor::where("name",$e->first()->first()->author)->first();
+            $e->map(function($s) use ($totalInteractions,$tutor){
+                $s->map(function($k) use ($totalInteractions,$tutor){
+                    $totalInteractions += $k->comments->where("tutor_id",$tutor->id)->count();
                 });
             });
-            return $e->count() + $totalInteractions;
+            $mth = ceil(Carbon::parse($tutor->created_at,"UTC")->diffInMonths(Carbon::now('UTC')));
+            return ($e->count() + $totalInteractions) / $mth;
         });
         return $blogs;
     }
