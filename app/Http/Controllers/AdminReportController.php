@@ -1,16 +1,18 @@
 <?php
 namespace App\Http\Controllers;
 
+use App\Models\Blog;
 use App\Models\Student;
 use App\Models\Tutor;
 use Carbon\Carbon;
 
 class AdminReportController extends Controller
 {
-    public function AdminReport()
+public function AdminReport()
     {
         // Retrieve all students that have at least one allocation.
         // We eager-load the tutor through the allocation, blogs, and comments.
+        $blogs = $this->getAverageMessageToStudents();
         $students = Student::whereHas('allocations')
             ->with(['allocations.tutor', 'blogs', 'comments'])
             ->get();
@@ -127,9 +129,25 @@ class AdminReportController extends Controller
 
         // Return both groups in a JSON response.
         return response()->json([
+            'Average_Interaction' => $blogs,
             'group_no_login'                => $groupNoLogin,
             'group_login_calculated'        => $groupLoginCalculated,
             'student_without_personalTutor' => $studentsWithoutTutor,
         ]);
+    }
+
+    private function getAverageMessageToStudents(){
+        $blogs = Blog::withCount("comments")->get();
+        $blogs = $blogs->groupBy(["author","author_type"]);
+        $blogs = $blogs->map(function($e){
+            $totalInteractions = 0;
+            $e->map(function($s) use ($totalInteractions){
+                $s->map(function($k) use ($totalInteractions){
+                    $totalInteractions += $k->comments_count;
+                });
+            });
+            return $e->count() + $totalInteractions;
+        });
+        return $blogs;
     }
 }

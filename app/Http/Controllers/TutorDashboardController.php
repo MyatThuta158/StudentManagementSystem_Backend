@@ -119,6 +119,7 @@ class TutorDashboardController extends Controller
             'status' => 'success',
             'message' => 'Tutor dashboard data fetched successfully',
             'data' => [
+                'tutor_name' => $tutor->name, // ✅ Add this
                 'total_students' => $total_students,
                 'blogging_insights' => $blogging_insights,
                 'scheduled_meetings' => $scheduled_meetings,
@@ -236,8 +237,9 @@ class TutorDashboardController extends Controller
                     'total_students' => $total_students,
                     'blogging_insights' => $blogging_insights,
                     'scheduled_meetings' => $scheduled_meetings,
-                    'students' => $allocated_students, // Filtered student list
+                    'students' => $allocated_students,
                 ]
+
             ], 200);
         }
     }

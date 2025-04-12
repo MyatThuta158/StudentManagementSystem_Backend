@@ -14,6 +14,8 @@ class TutorReportController extends Controller
 {
     public function report(Request $request)
     {
+        
+
         $user = Auth::guard('sanctum')->user();
 
         if (!($user instanceof \App\Models\Tutor)) {
