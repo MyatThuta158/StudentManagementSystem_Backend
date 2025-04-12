@@ -3,6 +3,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Blog;
 use App\Models\MeetingDetail;
+use App\Models\MeetingRequest;
 use App\Models\Student;
 use Carbon\Carbon;
 // make sure Carbon is imported for date comparisons
@@ -58,13 +59,11 @@ class StudentDashboardController extends Controller
 
         // ---------------- UPCOMING MEETINGS ---------------- //
         // Retrieve upcoming meetings by filtering on arrange_date greater than now.
-        $upcomingMeetings = MeetingDetail::with('arranging')
-            ->where('arrange_date', '>', Carbon::now())
-            ->whereHas('arranging', function ($q) use ($student) {
-                $q->where('student_id', $student->id);
-            })
-            ->orderBy('arrange_date', 'asc')
-            ->get();
+
+
+        $upcomingMeetings = MeetingRequest::with('approvedArrangement')->whereHas('approvedArrangement', function ($q) use ($student) {
+            $q->where('student_id', $student->id);
+        })->orderByDesc("created_at")->take(10)->get();
 
         // ---------------- TUTOR ALLOCATION INFO ---------------- //
         // Retrieve the student's allocation with the related tutor.
@@ -145,13 +144,9 @@ class StudentDashboardController extends Controller
             $totalMeeting = $onlineMeetingsCount + $campusMeetingsCount;
 
             // ---------------- UPCOMING MEETINGS ---------------- //
-            $upcomingMeetings = MeetingDetail::with('arranging')
-                ->where('arrange_date', '>', Carbon::now())
-                ->whereHas('arranging', function ($q) use ($student) {
-                    $q->where('student_id', $student->id);
-                })
-                ->orderBy('arrange_date', 'asc')
-                ->get();
+            $upcomingMeetings = MeetingRequest::with('approvedArrangement')->whereHas('approvedArrangement', function ($q) use ($student) {
+                $q->where('student_id', $student->id);
+            })->orderByDesc("created_at")->take(10)->get();
 
             // ---------------- TUTOR ALLOCATION INFO ---------------- //
             $allocation = $student->allocations()->with('tutor')->first();
