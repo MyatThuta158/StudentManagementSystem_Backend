@@ -17,7 +17,7 @@ class BlogController extends Controller
      */
     public function index($studentId)
     {
-        $blogs = Blog::with(['comments', 'documents'])
+        $blogs = Blog::with(['comments', 'comments.tutor', 'comments.student', 'documents'])
             ->where('student_id', $studentId)
             ->orderBy('created_at', 'desc')
             ->get();
