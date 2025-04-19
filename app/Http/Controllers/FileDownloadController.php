@@ -37,16 +37,15 @@ class FileDownloadController extends Controller
                 return response()->json(['message' => 'Invalid file type.'], 400);
         }
 
-        if (!$path || !Storage::disk('public')->exists($path)) {
+        $fullPath = storage_path("app/public/{$path}");
+
+        if (!$path || !File::exists($fullPath)) {
             return response()->json(['message' => 'File not found.'], 404);
         }
 
-        return response()->download(
-            storage_path("app/public/{$path}"),
-            $name,
-            ['Content-Type' => 'application/octet-stream']
-        );
+        return response()->download($fullPath, $name, ['Content-Type' => 'application/octet-stream']);
     }
+
 
     public function downloadAllFilesForBlog($blogId)
     {
