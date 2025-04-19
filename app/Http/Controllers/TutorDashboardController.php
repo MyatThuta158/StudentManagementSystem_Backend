@@ -19,6 +19,13 @@ class TutorDashboardController extends Controller
         // **Get the authenticated tutor**
         $tutor = Tutor::where('id', $request->user()->id)->first();
 
+        // Prepare the user information.
+        $userInfo = [
+            'name' => $tutor->name,
+            'email' => $tutor->email,
+            'last_login_at' => $tutor->last_login_at,
+        ];
+
         if (!$tutor) {
             return response()->json([
                 'status' => 'error',
@@ -119,7 +126,7 @@ class TutorDashboardController extends Controller
             'status' => 'success',
             'message' => 'Tutor dashboard data fetched successfully',
             'data' => [
-                'tutor_name' => $tutor->name, // ✅ Add this
+                'userInfo' => $userInfo,
                 'total_students' => $total_students,
                 'blogging_insights' => $blogging_insights,
                 'scheduled_meetings' => $scheduled_meetings,
@@ -133,6 +140,12 @@ class TutorDashboardController extends Controller
         if (auth()->user()->hasAnyRole(['staff'])) {
             // **Get the authenticated tutor**
             $tutor = Tutor::where('id', $tutor_id)->first();
+            // Prepare the user information.
+            $userInfo = [
+                'name' => $tutor->name,
+                'email' => $tutor->email,
+                'last_login_at' => $tutor->last_login_at,
+            ];
 
             if (!$tutor) {
                 return response()->json([
@@ -234,6 +247,7 @@ class TutorDashboardController extends Controller
                 'status' => 'success',
                 'message' => 'Tutor dashboard data fetched successfully',
                 'data' => [
+                    'userInfo' => $userInfo,
                     'total_students' => $total_students,
                     'blogging_insights' => $blogging_insights,
                     'scheduled_meetings' => $scheduled_meetings,
