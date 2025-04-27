@@ -30,18 +30,32 @@ class TutorSeeder extends Seeder
         // Change the count as needed
         for ($i = 1; $i <= 40; $i++) {
             $tutorData = [
-                "name"           => $faker->name,
-                "email"          => $faker->unique()->safeEmail,
-                "password"       => bcrypt("password"), // Always hashed using bcrypt
-                "phone_number"   => $faker->numerify('097900#####'),
+                "name" => $faker->name,
+                "email" => $faker->unique()->safeEmail,
+                "password" => bcrypt("password"), // Always hashed using bcrypt
+                "phone_number" => $faker->numerify('097900#####'),
                 "specialization" => $faker->randomElement($specializations),
-                "created_at"     => Carbon::now('UTC'),
-                "updated_at"     => Carbon::now('UTC'),
+                "created_at" => Carbon::now('UTC'),
+                "updated_at" => Carbon::now('UTC'),
             ];
 
             $tutor = Tutor::create($tutorData);
             // Assign the "tutor" role
             $tutor->assignRole('tutor');
         }
+
+        $tutorData = [
+            "id"=>41,
+            "name" => $faker->name,
+            "email" => "myothandar234@outlook.com",
+            "password" => bcrypt("password"), // Always hashed using bcrypt
+            "phone_number" => $faker->numerify('097900#####'),
+            "specialization" => $faker->randomElement($specializations),
+            "created_at" => Carbon::now('UTC'),
+            "updated_at" => Carbon::now('UTC'),
+        ];
+        $tutor = Tutor::create($tutorData);
+        // Assign the "tutor" role
+        $tutor->assignRole('tutor');
     }
 }
