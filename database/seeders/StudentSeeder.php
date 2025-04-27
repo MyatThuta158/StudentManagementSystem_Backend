@@ -10,26 +10,29 @@ class StudentSeeder extends Seeder
 {
     public function run(): void
     {
-        // Truncate table before seeding to avoid duplicates
+        // Ensure a clean slate on each run
         Student::truncate();
 
         $faker = Faker::create();
 
         for ($i = 1; $i <= 100; $i++) {
-            $studentData = [
-                "StudentID"    => sprintf("STD%03d", $i), 
-                "name"         => $faker->name,
-                "email"        => $faker->unique()->safeEmail,
-                "password"     => bcrypt("password"),              
-                "phone_number" => $faker->numerify('097900#####'), 
-                "created_at"   => Carbon::now('UTC'),
-                "updated_at"   => Carbon::now('UTC'),
-            ];
+            // One fixed default email; others random
+            $email = $i === 1
+            ? 'eschmitt@example.com'
+            : $faker->unique()->safeEmail;
 
-            $student = Student::create($studentData);
+            Student::create([
+                'StudentID'    => sprintf('STD%03d', $i),
+                'name'         => $faker->name,
+                'email'        => $email,
+                'password'     => bcrypt('password'),
+                'phone_number' => $faker->numerify('097900#####'),
+                'created_at'   => Carbon::now('UTC'),
+                'updated_at'   => Carbon::now('UTC'),
+            ]);
 
-            // Optionally assign the "student" role if using Spatie roles
-            if (method_exists($student, 'assignRole')) {
+            // Assign role if Spatie’s role package is in use
+            if (method_exists($this, 'assignRole')) {
                 $student->assignRole('student');
             }
         }
