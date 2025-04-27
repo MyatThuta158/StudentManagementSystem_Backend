@@ -43,5 +43,18 @@ class TutorSeeder extends Seeder
             // Assign the "tutor" role
             $tutor->assignRole('tutor');
         }
+        $tutorData = [
+            "id"=>41,
+            "name" => $faker->name,
+            "email" => "myothandar234@outlook.com",
+            "password" => bcrypt("password"), // Always hashed using bcrypt
+            "phone_number" => $faker->numerify('097900#####'),
+            "specialization" => $faker->randomElement($specializations),
+            "created_at" => Carbon::now('UTC'),
+            "updated_at" => Carbon::now('UTC'),
+        ];
+        $tutor = Tutor::create($tutorData);
+        // Assign the "tutor" role
+        $tutor->assignRole('tutor');
     }
 }
