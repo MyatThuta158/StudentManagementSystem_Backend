@@ -21,7 +21,7 @@ class BlogsAndCommentsSeeder extends Seeder
         for ($i = 1; $i <= 10; $i++) {
 
             // Alternate author roles between 'student' and 'tutor'
-            $role = ($i % 2 === 0) ? 'student' : 'tutor';
+            $role = ($i % 1 === 0) ? 'student' : 'tutor';
 
             // Create a blog entry
             $blog = Blog::create([
