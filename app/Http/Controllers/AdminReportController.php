@@ -2,13 +2,14 @@
 namespace App\Http\Controllers;
 
 use App\Models\Blog;
+use App\Models\Comments;
 use App\Models\Student;
 use App\Models\Tutor;
 use Carbon\Carbon;
 
 class AdminReportController extends Controller
 {
-public function AdminReport()
+    public function AdminReport()
     {
         // Retrieve all students that have at least one allocation.
         // We eager-load the tutor through the allocation, blogs, and comments.
@@ -31,24 +32,24 @@ public function AdminReport()
             }
             // Use the allocation date from the first allocation record.
             $allocation = $student->allocations->first();
-            if (! $allocation || ! $allocation->allocation_date) {
+            if (!$allocation || !$allocation->allocation_date) {
                 return false;
             }
             $allocationDate = Carbon::parse($allocation->allocation_date);
-            $inactiveDays   = $allocationDate->diffInDays(Carbon::now());
+            $inactiveDays = $allocationDate->diffInDays(Carbon::now());
             return $inactiveDays > 7;
         })->map(function ($student) {
-            $allocation     = $student->allocations->first();
+            $allocation = $student->allocations->first();
             $allocationDate = Carbon::parse($allocation->allocation_date);
-            $inactiveDays   = $allocationDate->diffInDays(Carbon::now());
-            $tutorName      = isset($allocation->tutor->name) ? $allocation->tutor->name : null;
+            $inactiveDays = $allocationDate->diffInDays(Carbon::now());
+            $tutorName = isset($allocation->tutor->name) ? $allocation->tutor->name : null;
 
             return [
-                'student_code'  => $student->StudentID,
-                'email'         => $student->email,
-                'last_login'    => "No login",
+                'student_code' => $student->StudentID,
+                'email' => $student->email,
+                'last_login' => "No login",
                 'inactive_days' => $inactiveDays,
-                'tutor_name'    => $tutorName,
+                'tutor_name' => $tutorName,
             ];
         })->values(); // Re-index the collection
 
@@ -72,7 +73,7 @@ public function AdminReport()
             $allocation = $student->allocations->first();
 
             //  dd($allocation->allocation_date);
-            if (! $allocation || ! $allocation->allocation_date) {
+            if (!$allocation || !$allocation->allocation_date) {
                 continue;
             }
 
@@ -86,19 +87,19 @@ public function AdminReport()
             } else {
                 // If blogs or comments exist, find the most recent created_at date.
                 $latestBlog = $student->blogs->isNotEmpty()
-                ? Carbon::parse($student->blogs->max('created_at'))
-                : null;
+                    ? Carbon::parse($student->blogs->max('created_at'))
+                    : null;
 
                 // dd($latestBlog);
                 $latestComment = $student->comments->isNotEmpty()
-                ? Carbon::parse($student->comments->max('created_at'))
-                : null;
+                    ? Carbon::parse($student->comments->max('created_at'))
+                    : null;
 
                 if ($latestBlog && $latestComment) {
                     // Choose the later of the two.
                     $lastActivity = $latestBlog->greaterThan($latestComment)
-                    ? $latestBlog
-                    : $latestComment;
+                        ? $latestBlog
+                        : $latestComment;
                 } else {
                     $lastActivity = $latestBlog ?? $latestComment;
                 }
@@ -111,11 +112,11 @@ public function AdminReport()
             // Only include the student if inactive days exceed 7.
             if ($inactiveDays > 7) {
                 $groupLoginCalculated[] = [
-                    'student_code'  => $student->StudentID,
-                    'email'         => $student->email,
-                    'last_login'    => Carbon::parse($student->last_login_at)->format('Y-m-d'),
+                    'student_code' => $student->StudentID,
+                    'email' => $student->email,
+                    'last_login' => Carbon::parse($student->last_login_at)->format('Y-m-d'),
                     'inactive_days' => $inactiveDays,
-                    'tutor_name'    => isset($allocation->tutor->name) ? $allocation->tutor->name : null,
+                    'tutor_name' => isset($allocation->tutor->name) ? $allocation->tutor->name : null,
                 ];
             }
         }
@@ -130,25 +131,29 @@ public function AdminReport()
         // Return both groups in a JSON response.
         return response()->json([
             'Average_Interaction' => $blogs,
-            'group_no_login'                => $groupNoLogin,
-            'group_login_calculated'        => $groupLoginCalculated,
+            'group_no_login' => $groupNoLogin,
+            'group_login_calculated' => $groupLoginCalculated,
             'student_without_personalTutor' => $studentsWithoutTutor,
         ]);
     }
 
-    private function getAverageMessageToStudents(){
-        $blogs = Blog::where("author_role",'tutor')->with("comments")->get();
-        $blogs = $blogs->groupBy(["author","author_role"]);
-        $blogs = $blogs->map(function($e){
-            $totalInteractions = 0;
-            $tutor = Tutor::where("name",$e->first()->first()->author)->first();
-            $e->map(function($s) use ($totalInteractions,$tutor){
-                $s->map(function($k) use ($totalInteractions,$tutor){
-                    $totalInteractions += $k->comments->where("tutor_id",$tutor->id)->count();
-                });
-            });
+    private function getAverageMessageToStudents()
+    {
+        $blogs = Blog::where("author_role", 'tutor')->with("comments")->get();
+        $blogs = $blogs->sortBy(["author", "author_role"]);
+        $blogs = $blogs->countBy('author');
+        $comments = Comments::with("tutor")->whereNotNull('tutor_id')->get();
+        $comments = $comments->countBy('tutor.name');
+        $blogs=$blogs->merge($comments)->map(function ($value, $key) use ($comments) {
+            if ($comments->has($key)) {
+                return $value + $comments->get($key);
+            }
+            return $value;
+        });
+        $blogs = $blogs->map(function($value,$key){
+            $tutor = Tutor::where("name",$key)->first();
             $mth = ceil(Carbon::parse($tutor->created_at,"UTC")->diffInMonths(Carbon::now('UTC')));
-            return ($e->count() + $totalInteractions) / $mth;
+            return $value / $mth;
         });
         return $blogs;
     }
