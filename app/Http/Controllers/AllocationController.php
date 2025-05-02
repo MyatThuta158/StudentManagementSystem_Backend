@@ -170,9 +170,8 @@ class AllocationController extends Controller
     {
         $student_id = auth()->user()->id;
         $student = Student::where('id', $student_id)->first();
-        $tutor_id = Arranging::where('student_id', $student_id)->first()->tutor_id;
-
-        $sample_output = Arranging::where('student_id', $student_id)->where('tutor_id', $tutor_id)->has("meetingDetails")->with(['meetingDetails'])->get()->map(function ($e, $i) {
+        $tutor_id = Allocation::withTrashed()->where('student_id', $student_id)->get('tutor_id')->map(function($i) { return $i->tutor_id;});
+        $sample_output = Arranging::where('student_id', $student_id)->whereIn('tutor_id', $tutor_id)->has("meetingDetails")->with(['meetingDetails'])->get()->map(function ($e, $i) {
             $temp = $e['meetingDetails']->whereIn('status', ['pending', 'cancelled', 'completed'])->sortByDesc("created_at")->first();
             $meetingDetailCount = $e['meetingDetails']->count();
             $meetingRecord = isset($temp->meetingRecords) ? $temp['meetingRecords']->first() : null;
