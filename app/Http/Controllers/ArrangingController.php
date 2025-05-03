@@ -9,6 +9,10 @@ use App\Models\Arranging;
 use App\Models\Student;
 use App\Models\Tutor;
 use App\Notifications\AllocatedStudent;
+use App\Notifications\MeetingCancelNotification;
+use App\Notifications\MeetingCancelStudentNotification;
+use App\Notifications\MeetingCreateNotification;
+use App\Notifications\MeetingCreateStudentNotification;
 use Illuminate\Http\Request;
 use App\Models\MeetingDetail;
 use Illuminate\Support\Facades\Auth;
@@ -110,8 +114,8 @@ class ArrangingController extends Controller
 
         $student = Student::where("id", $arranging['student_id'])->first();
         $tutor = Tutor::where("id", $arranging['tutor_id'])->first();
-        $student_job = new SendEmailNotification(new MeetingCreateMail($student, $tutor), $student);
-        $tutor_job = new SendEmailNotification(new MeetingCreateMail($student, $tutor), $tutor);
+        $student_job = new SendEmailNotification(new MeetingCreateStudentNotification($student, $tutor), $student);
+        $tutor_job = new SendEmailNotification(new MeetingCreateNotification($student, $tutor), $tutor);
 
         dispatch($student_job);
         dispatch($tutor_job);
@@ -210,8 +214,8 @@ class ArrangingController extends Controller
 
         $student = Student::where("id", $arranging['student_id'])->first();
         $tutor = Tutor::where("id", $arranging['tutor_id'])->first();
-        $student_job = new SendEmailNotification(new MeetingCancelMail($student, $tutor), $student);
-        $tutor_job = new SendEmailNotification(new MeetingCancelMail($student, $tutor), $tutor);
+        $student_job = new SendEmailNotification(new MeetingCancelStudentNotification($student, $tutor), $student);
+        $tutor_job = new SendEmailNotification(new MeetingCancelNotification($student, $tutor), $tutor);
 
         dispatch($student_job);
         dispatch($tutor_job);

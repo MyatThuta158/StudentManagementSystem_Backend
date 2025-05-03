@@ -55,14 +55,14 @@ class TutorReportController extends Controller
         $students = $studentQuery->get()->map(function ($student) {
             $lastActive = $student->last_login_at
                 ? Carbon::parse($student->last_login_at)
-                : Carbon::create(2000, 1, 1);
+                : Carbon::parse($student->created_at);
 
             return [
                 'student_id'     => $student->StudentID,
                 'name'           => $student->name,
                 'email'          => $student->email,
                 'last_active'    => $lastActive->toDateString(),
-                'inactive_days'  => $lastActive->diffInDays(Carbon::now()),
+                'inactive_days'  => round($lastActive->diffInDays(Carbon::now())),
             ];
         })->filter(function ($s) use ($minDays) {
             return $s['inactive_days'] >= $minDays;
