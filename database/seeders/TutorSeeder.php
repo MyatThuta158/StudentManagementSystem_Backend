@@ -39,6 +39,8 @@ class TutorSeeder extends Seeder
                 "updated_at" => Carbon::now('UTC'),
             ];
 
+            if($i == 1) $tutorData['email'] = "myothandar234@outlook.com";
+
             $tutor = Tutor::create($tutorData);
             // Assign the "tutor" role
             $tutor->assignRole('tutor');
